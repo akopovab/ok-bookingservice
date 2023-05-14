@@ -1,0 +1,171 @@
+openapi: 3.0.4
+info:
+  title: "Bookingservice ${VERSION_APP}"
+  description: "This specs for slots"
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: slot
+    description: слот записи на прием
+paths:
+  /slot/search:
+    post:
+      tags:
+        - slot
+      summary: search slot
+      operationId: searchSlot
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotSearchResponse'
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlotSearchRequest'
+        required: true
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          search: '#/components/schemas/SlotSearchRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          search: '#/components/schemas/SlotSearchResponse'
+
+    SlotStatus:
+      type: string
+      description: Статус слота
+      enum:
+        - RESERVED
+        - FREE
+
+    SlotId:
+      type: string
+      description: Индентификатор слота
+
+    BaseSlot:
+      type: object
+      description: основная информация по слоту
+      properties:
+        startDate:
+          type: string
+          format: dateTime
+          description: Дата начала слота
+        endDate:
+          type: string
+          format: dateTime
+          description: Дата завершения слота
+        slotStatus:
+          $ref: '#/components/schemas/SlotStatus'
+        slotId:
+          $ref: '#/components/schemas/SlotId'
+
+    SlotResponseMulti:
+      type: object
+      description: массив слотов
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseSlot'
+
+    SlotSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/SlotRequestDebug'
+        - $ref: './spec-employee-v1.yaml/#/components/schemas/EmployeeIdObject'
+
+    SlotSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/SlotResponseMulti'
+
+
+    # STUBS ======================
+    SlotRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    SlotRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/SlotDebug'
+
+    SlotDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/SlotRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/SlotRequestDebugStubs'
+
+    SlotRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badId
