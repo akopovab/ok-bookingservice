@@ -25,11 +25,10 @@
 - lastName - фио пользователя
 - workPhone - рабочий телефон
 - cabinetNum - кабинет
-- orgPosition - должность
 
 ### Статус встречи (MeetRequest) Enum
 - CREATE - создано
-- CONFIRMED - встреча проведена
+- TOOK_PLACE - встреча проведена
 - MEET_UNDONE - встреча не состоялась
 - WITHDRAWN - отозвано
 
