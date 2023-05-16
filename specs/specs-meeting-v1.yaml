@@ -1,0 +1,370 @@
+openapi: 3.0.4
+info:
+  title: "Bookingservice Meeting"
+  description: "This specs for meeting"
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: meeting
+    description: Запись на прием
+paths:
+  /meeting/create:
+    post:
+      tags:
+        - meeting
+      summary: Create meeting
+      operationId: meetingCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+  /meeting/read:
+    post:
+      tags:
+        - meeting
+      summary: Read meeting
+      operationId: meetingRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingReadResponse'
+  /meeting/update:
+    post:
+      tags:
+        - meeting
+      summary: Update meeting
+      operationId: meetingUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingUpdateResponse'
+  /meeting/delete:
+    post:
+      tags:
+        - meeting
+      summary: Delete meeting
+      operationId: meetingDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingDeleteResponse'
+  /meeting/search:
+    post:
+      tags:
+        - meeting
+      summary: Search meeting
+      operationId: meetingSearch
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingSearchResponse'
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/MeetingCreateRequest'
+          read: '#/components/schemas/MeetingReadRequest'
+          update: '#/components/schemas/MeetingUpdateRequest'
+          delete: '#/components/schemas/MeetingDeleteRequest'
+          search: '#/components/schemas/MeetingSearchRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/MeetingCreateResponse'
+          read: '#/components/schemas/MeetingReadResponse'
+          update: '#/components/schemas/MeetingUpdateResponse'
+          delete: '#/components/schemas/MeetingDeleteResponse'
+          search: '#/components/schemas/MeetingSearchResponse'
+
+    MeetingId:
+      type: string
+      description: Идентификатор записи
+
+    EmployeeId:
+      type: string
+      description: Индентификатор сотрудника
+
+    ClientId:
+      type: string
+      description: Индентификатор клиента
+
+    SlotIdList:
+      type: array
+      items:
+        $ref: './specs-slot-v1.yaml/#/components/schemas/SlotId'
+
+    MeetingStatus:
+      type: string
+      description: Статус встречи
+      enum:
+        - CREATE
+        - TOOK_PLACE
+        - Meeting_UNDONE
+        - WITHDRAWN
+
+    MeetingPermissions:
+      type: string
+      description: права доступа
+      enum:
+        - DELETE
+        - READ
+        - UPDATE
+
+    BaseMeeting:
+      type: object
+      description: Данные встречи
+      properties:
+        clientId:
+          $ref: '#/components/schemas/ClientId'
+        employeeId:
+          $ref: '#/components/schemas/EmployeeId'
+        slots:
+          $ref: '#/components/schemas/SlotIdList'
+        description:
+          type: string
+          description: примечание к встрече
+
+    MeetingIdObject:
+      type: object
+      properties:
+        meetingId:
+          $ref: '#/components/schemas/MeetingId'
+
+    MeetingUpdateObject:
+      allOf:
+        - $ref: '#/components/schemas/MeetingIdObject'
+        - $ref: '#/components/schemas/BaseMeeting'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/MeetingStatus'
+
+    MeetingReadObject:
+      allOf:
+        - $ref: '#/components/schemas/MeetingIdObject'
+        - $ref: '#/components/schemas/BaseMeeting'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/MeetingStatus'
+        - type: object
+          properties:
+            meetingPermissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/MeetingPermissions'
+
+    MeetingCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/BaseMeeting'
+
+    MeetingUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingUpdateObject'
+
+    MeetingReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - $ref: '#/components/schemas/MeetingIdObject'
+
+    MeetingDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - $ref: '#/components/schemas/MeetingIdObject'
+
+    MeetingSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - type: object
+          properties:
+            employeeId:
+              $ref: '#/components/schemas/EmployeeId'
+
+    MeetingCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - $ref: '#/components/schemas/MeetingIdObject'
+
+    MeetingUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - $ref: '#/components/schemas/MeetingIdObject'
+
+    MeetingReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - type: object
+          properties:
+            meeting:
+             $ref: '#/components/schemas/MeetingReadObject'
+
+    MeetingDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+
+    MeetingSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/MeetingRequestDebug'
+        - type: object
+          properties:
+            meetings:
+              type: array
+              items:
+                $ref: '#/components/schemas/MeetingReadObject'
+
+
+# STUBS ======================
+    MeetingRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    MeetingRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/MeetingDebug'
+
+    MeetingDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/MeetingRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/MeetingRequestDebugStubs'
+
+    MeetingRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badSlotId
+        - badDescription
+        - badClientId
+        - badEmployeeId
+        - slotIdReserved
