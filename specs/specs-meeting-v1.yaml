@@ -233,7 +233,7 @@ components:
               delete: '#/components/schemas/MeetingDeleteResponse'
               search: '#/components/schemas/MeetingSearchResponse'
 
-    # Meeting ======================
+# Meeting ======================
     MeetingId:
       type: string
       description: Идентификатор записи
@@ -245,11 +245,6 @@ components:
     ClientId:
       type: string
       description: Индентификатор клиента
-
-    SlotIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/SlotId'
 
     MeetingStatus:
       type: string
@@ -268,40 +263,63 @@ components:
         - READ
         - UPDATE
 
+    SlotIdList:
+      description: Массив слотов
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            type: object
+            properties:
+              slotId:
+                $ref: '#/components/schemas/SlotId'
+
     BaseMeeting:
       type: object
-      description: Данные встречи для запроса на создание
+      description: базовые данные о встречи
       properties:
         clientId:
           $ref: '#/components/schemas/ClientId'
         employeeId:
           $ref: '#/components/schemas/EmployeeId'
-        slots:
-          $ref: '#/components/schemas/SlotIdList'
         description:
           type: string
           description: примечание к встрече
 
-    MeetingIdObject:
+    MeetingCreateObject:
+      description: Объект для создания встречи, включает в себя базовые данные о встрече и массив id слотов
+      allOf:
+        - $ref: '#/components/schemas/BaseMeeting'
+        - $ref: '#/components/schemas/SlotIdList'
+
+    MeetingReadObject:
+      description: Объект для чтения встречи, включает в себя id встречи
       type: object
       properties:
         meetingId:
           $ref: '#/components/schemas/MeetingId'
 
     MeetingUpdateObject:
-      description: Данные встречи для запроса на обновления
+      description: Объект для обновления встречи, включает в себя id, объект создания встречи и статус
       allOf:
-        - $ref: '#/components/schemas/MeetingIdObject'
-        - $ref: '#/components/schemas/BaseMeeting'
+        - $ref: '#/components/schemas/MeetingReadObject'
+        - $ref: '#/components/schemas/MeetingCreateObject'
         - type: object
           properties:
             status:
               $ref: '#/components/schemas/MeetingStatus'
 
-    MeetingObject:
+    MeetingResponseObject:
       description: Полные данные встречи включая статус и права
       allOf:
-        - $ref: '#/components/schemas/MeetingUpdateObject'
+        - $ref: '#/components/schemas/MeetingReadObject'
+        - $ref: '#/components/schemas/BaseMeeting'
+        - $ref: '#/components/schemas/SlotResponseObject'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/MeetingStatus'
         - type: object
           properties:
             meetingPermissions:
@@ -310,6 +328,7 @@ components:
               items:
                 $ref: '#/components/schemas/MeetingPermissions'
 
+#MeetingRequest:
     MeetingCreateRequest:
       description: Запрос на создание встречи
       allOf:
@@ -318,7 +337,7 @@ components:
         - type: object
           properties:
             meeting:
-              $ref: '#/components/schemas/BaseMeeting'
+              $ref: '#/components/schemas/MeetingCreateObject'
 
     MeetingUpdateRequest:
       description: Запрос на обновление встречи
@@ -335,14 +354,20 @@ components:
       allOf:
         - $ref: '#/components/schemas/IMeetingRequest'
         - $ref: '#/components/schemas/RequestDebug'
-        - $ref: '#/components/schemas/MeetingIdObject'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingReadObject'
 
     MeetingDeleteRequest:
       description: Запрос на удаление встречи
       allOf:
         - $ref: '#/components/schemas/IMeetingRequest'
         - $ref: '#/components/schemas/RequestDebug'
-        - $ref: '#/components/schemas/MeetingIdObject'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingReadObject'
 
     MeetingSearchRequest:
       description: Запрос на поиск встречи
@@ -354,6 +379,7 @@ components:
             employeeId:
               $ref: '#/components/schemas/EmployeeId'
 
+#MeetingResponse:
     MeetingCreateResponse:
       description: Ответ на создание встречи
       allOf:
@@ -361,7 +387,7 @@ components:
         - type: object
           properties:
             meeting:
-              $ref: '#/components/schemas/MeetingObject'
+              $ref: '#/components/schemas/MeetingResponseObject'
 
     MeetingUpdateResponse:
       description: Ответ на обновление встречи
@@ -370,7 +396,7 @@ components:
         - type: object
           properties:
             meeting:
-              $ref: '#/components/schemas/MeetingObject'
+              $ref: '#/components/schemas/MeetingResponseObject'
 
     MeetingReadResponse:
       description: Ответ на чтение встречи
@@ -379,7 +405,7 @@ components:
         - type: object
           properties:
             meeting:
-              $ref: '#/components/schemas/MeetingObject'
+              $ref: '#/components/schemas/MeetingResponseObject'
 
     MeetingDeleteResponse:
       description: Ответ на удаление встречи
@@ -395,7 +421,7 @@ components:
             meetings:
               type: array
               items:
-                $ref: '#/components/schemas/MeetingObject'
+                $ref: '#/components/schemas/MeetingResponseObject'
     # slots ======================
     SlotStatus:
       type: string
@@ -408,6 +434,7 @@ components:
       type: string
       description: Индентификатор слота
 
+
     SlotRequestObject:
       type: object
       properties:
@@ -419,6 +446,8 @@ components:
       type: object
       description: основная информация по слоту
       properties:
+        slotId:
+          $ref: '#/components/schemas/SlotId'
         startDate:
           type: string
           format: dateTime
@@ -429,8 +458,7 @@ components:
           description: Дата завершения слота
         slotStatus:
           $ref: '#/components/schemas/SlotStatus'
-        slotId:
-          $ref: '#/components/schemas/SlotId'
+
 
     SlotResponseObject:
       description: Массив слотов
@@ -440,6 +468,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BaseSlots'
+
 
     SlotSearchRequest:
       allOf:
@@ -451,7 +480,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/ISlotResponse'
         - $ref: '#/components/schemas/SlotResponseObject'
-
 
     # STUBS ======================
     RequestDebugMode:
@@ -482,6 +510,7 @@ components:
         - success
         - notFound
         - badSlotId
+        - badSlotDate
         - badMeetingId
         - badDescription
         - badClientId

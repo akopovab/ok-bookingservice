@@ -14,5 +14,5 @@ pluginManagement {
 //include("m1l1-quickstart")
 //include("ok-bookingservice-test")
 include("bookingservice-api")
-include("common")
-include("mappers")
+include("bookingservice-common")
+include("bookingservice-mappers")

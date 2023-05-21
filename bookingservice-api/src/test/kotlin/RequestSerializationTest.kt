@@ -12,10 +12,10 @@ class RequestSerializationTest {
             mode = RequestDebugMode.STUB,
             stub = RequestDebugStubs.BAD_CLIENT_ID
         ),
-        meeting = BaseMeeting(
+        meeting = MeetingCreateObject(
             clientId = "clientId123id",
             employeeId = "employeeId123id",
-            slots = listOf("abc", "123", "456"),
+            slots = listOf(SlotIdListSlotsInner("123")),
             description = "Стрижка на свадьбу, очень переживаю. До встречи!"
         )
     )
@@ -30,7 +30,7 @@ class RequestSerializationTest {
         assertContains(json, Regex("\"clientId\":\\s*\"clientId123id\""))
         assertContains(json, Regex("\"clientId\":\\s*\"clientId123id\""))
         assertContains(json, Regex("\"employeeId\":\\s*\"employeeId123id\""))
-        assertContains(json, Regex("\"slots\":\\W*\"abc\""))
+        assertContains(json, Regex("\"slotId\":\\s*\"123\""))
         assertContains(json, Regex("\"description\":\\s*\"Стрижка на свадьбу, очень переживаю. До встречи!\""))
     }
 
