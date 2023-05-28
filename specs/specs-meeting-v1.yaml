@@ -1,0 +1,518 @@
+openapi: 3.0.4
+info:
+  title: "Bookingservice Meeting"
+  description: "This specs for meeting"
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: meeting
+    description: Запись на прием
+  - name: slot
+    description: слот записи на прием
+paths:
+  /meeting/create:
+    post:
+      tags:
+        - meeting
+      summary: Create meeting
+      operationId: meetingCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+  /meeting/read:
+    post:
+      tags:
+        - meeting
+      summary: Read meeting
+      operationId: meetingRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingReadResponse'
+  /meeting/update:
+    post:
+      tags:
+        - meeting
+      summary: Update meeting
+      operationId: meetingUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingUpdateResponse'
+  /meeting/delete:
+    post:
+      tags:
+        - meeting
+      summary: Delete meeting
+      operationId: meetingDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingDeleteResponse'
+  /meeting/search:
+    post:
+      tags:
+        - meeting
+      summary: Search meeting
+      operationId: meetingSearch
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingSearchResponse'
+  /slot/search:
+    post:
+      tags:
+        - slot
+      summary: search slot
+      operationId: searchSlot
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotSearchResponse'
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlotSearchRequest'
+        required: true
+
+components:
+  schemas:
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+
+    IMeetingRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          description: Базовый интерфейс для всех запросов по встрече
+          discriminator:
+            propertyName: requestType
+            mapping:
+              create: '#/components/schemas/MeetingCreateRequest'
+              read: '#/components/schemas/MeetingReadRequest'
+              update: '#/components/schemas/MeetingUpdateRequest'
+              delete: '#/components/schemas/MeetingDeleteRequest'
+              search: '#/components/schemas/MeetingSearchRequest'
+
+    ISlotRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          description: Базовый интерфейс для всех запросов по встрече
+          discriminator:
+            propertyName: requestType
+            mapping:
+              search: '#/components/schemas/MeetingSearchRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+    ISlotResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          description: Базовый интерфейс для ответа на поиск слота
+          discriminator:
+            propertyName: responseType
+            mapping:
+              search: '#/components/schemas/SlotSearchResponse'
+
+    IMeetingResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          description: Базовый интерфейс для всех ответов по встрече
+          discriminator:
+            propertyName: responseType
+            mapping:
+              create: '#/components/schemas/MeetingCreateResponse'
+              read: '#/components/schemas/MeetingReadResponse'
+              update: '#/components/schemas/MeetingUpdateResponse'
+              delete: '#/components/schemas/MeetingDeleteResponse'
+              search: '#/components/schemas/MeetingSearchResponse'
+
+# Meeting ======================
+    MeetingId:
+      type: string
+      description: Идентификатор записи
+
+    EmployeeId:
+      type: string
+      description: Индентификатор сотрудника
+
+    ClientId:
+      type: string
+      description: Индентификатор клиента
+
+    MeetingStatus:
+      type: string
+      description: Статус встречи
+      enum:
+        - CREATE
+        - TOOK_PLACE
+        - MEETING_UNDONE
+        - WITHDRAWN
+
+    MeetingPermissions:
+      type: string
+      description: права доступа
+      enum:
+        - DELETE
+        - READ
+        - UPDATE
+
+    SlotIdList:
+      description: Массив слотов
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            type: object
+            properties:
+              slotId:
+                $ref: '#/components/schemas/SlotId'
+
+    BaseMeeting:
+      type: object
+      description: базовые данные о встречи
+      properties:
+        clientId:
+          $ref: '#/components/schemas/ClientId'
+        employeeId:
+          $ref: '#/components/schemas/EmployeeId'
+        description:
+          type: string
+          description: примечание к встрече
+
+    MeetingCreateObject:
+      description: Объект для создания встречи, включает в себя базовые данные о встрече и массив id слотов
+      allOf:
+        - $ref: '#/components/schemas/BaseMeeting'
+        - $ref: '#/components/schemas/SlotIdList'
+
+    MeetingReadObject:
+      description: Объект для чтения встречи, включает в себя id встречи
+      type: object
+      properties:
+        meetingId:
+          $ref: '#/components/schemas/MeetingId'
+
+    MeetingUpdateObject:
+      description: Объект для обновления встречи, включает в себя id, объект создания встречи и статус
+      allOf:
+        - $ref: '#/components/schemas/MeetingReadObject'
+        - $ref: '#/components/schemas/MeetingCreateObject'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/MeetingStatus'
+
+    MeetingResponseObject:
+      description: Полные данные встречи включая статус и права
+      allOf:
+        - $ref: '#/components/schemas/MeetingReadObject'
+        - $ref: '#/components/schemas/BaseMeeting'
+        - $ref: '#/components/schemas/SlotResponseObject'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/MeetingStatus'
+        - type: object
+          properties:
+            meetingPermissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/MeetingPermissions'
+
+#MeetingRequest:
+    MeetingCreateRequest:
+      description: Запрос на создание встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingCreateObject'
+
+    MeetingUpdateRequest:
+      description: Запрос на обновление встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingUpdateObject'
+
+    MeetingReadRequest:
+      description: Запрос на чтение встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingReadObject'
+
+    MeetingDeleteRequest:
+      description: Запрос на удаление встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingReadObject'
+
+    MeetingSearchRequest:
+      description: Запрос на поиск встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - type: object
+          properties:
+            employeeId:
+              $ref: '#/components/schemas/EmployeeId'
+
+#MeetingResponse:
+    MeetingCreateResponse:
+      description: Ответ на создание встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingResponse'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingResponseObject'
+
+    MeetingUpdateResponse:
+      description: Ответ на обновление встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingResponse'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingResponseObject'
+
+    MeetingReadResponse:
+      description: Ответ на чтение встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingResponse'
+        - type: object
+          properties:
+            meeting:
+              $ref: '#/components/schemas/MeetingResponseObject'
+
+    MeetingDeleteResponse:
+      description: Ответ на удаление встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingResponse'
+
+    MeetingSearchResponse:
+      description: Ответ на поиск встречи
+      allOf:
+        - $ref: '#/components/schemas/IMeetingResponse'
+        - type: object
+          properties:
+            meetings:
+              type: array
+              items:
+                $ref: '#/components/schemas/MeetingResponseObject'
+    # slots ======================
+    SlotStatus:
+      type: string
+      description: Статус слота
+      enum:
+        - RESERVED
+        - FREE
+
+    SlotId:
+      type: string
+      description: Индентификатор слота
+
+
+    SlotRequestObject:
+      type: object
+      properties:
+        employeeId:
+          $ref: '#/components/schemas/EmployeeId'
+          description: объект индентификатора сотрудника
+
+    BaseSlots:
+      type: object
+      description: основная информация по слоту
+      properties:
+        slotId:
+          $ref: '#/components/schemas/SlotId'
+        startDate:
+          type: string
+          format: dateTime
+          description: Дата начала слота
+        endDate:
+          type: string
+          format: dateTime
+          description: Дата завершения слота
+        slotStatus:
+          $ref: '#/components/schemas/SlotStatus'
+
+
+    SlotResponseObject:
+      description: Массив слотов
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseSlots'
+
+
+    SlotSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/ISlotRequest'
+        - $ref: '#/components/schemas/RequestDebug'
+        - $ref: '#/components/schemas/SlotRequestObject'
+
+    SlotSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/ISlotResponse'
+        - $ref: '#/components/schemas/SlotResponseObject'
+
+    # STUBS ======================
+    RequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    RequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/Debug'
+
+    Debug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/RequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/RequestDebugStubs'
+
+    RequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badSlotId
+        - badSlotDate
+        - badMeetingId
+        - badDescription
+        - badClientId
+        - badEmployeeId
+        - slotIdReserved
