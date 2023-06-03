@@ -1,1 +1,1 @@
-package ru.otuskotlin.public.bookingservice
+package ru.otuskotlin.public.bookingservice.api

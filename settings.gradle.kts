@@ -3,11 +3,16 @@ rootProject.name = "ok-bookingservice"
 pluginManagement {
     val kotlinVersion: String by settings
     val openapiVersion: String by settings
+    val ktorPluginVersion: String by settings
+    val bmuschkoVersion: String by settings
 
     plugins {
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion apply false
         id("org.openapi.generator") version openapiVersion apply false
+        id("io.ktor.plugin") version ktorPluginVersion apply false
+        id("com.bmuschko.docker-java-application") version bmuschkoVersion apply false
+        id("com.bmuschko.docker-remote-api") version bmuschkoVersion apply false
     }
 }
 
@@ -16,3 +21,6 @@ pluginManagement {
 include("bookingservice-api")
 include("bookingservice-common")
 include("bookingservice-mappers")
+include("bookingservice-meeting-app-ktor")
+//include("bookingservice-slot-app-ktor")
+include("bookingservice-stubs")
