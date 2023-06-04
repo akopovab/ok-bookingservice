@@ -19,7 +19,6 @@ fun BsMeetingContext.toTransportMeeting(): IMeetingResponse = when (val cmd = co
 }
 
 fun BsMeetingContext.toTransportCreate() = MeetingCreateResponse(
-    responseType = "create",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
@@ -27,7 +26,6 @@ fun BsMeetingContext.toTransportCreate() = MeetingCreateResponse(
 )
 
 fun BsMeetingContext.toTransportRead() = MeetingReadResponse(
-    responseType = "create",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
@@ -35,15 +33,13 @@ fun BsMeetingContext.toTransportRead() = MeetingReadResponse(
 )
 
 fun BsMeetingContext.toTransportUpdate() = MeetingUpdateResponse(
-    responseType = "create",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     meeting = meetingResponse.toTransportMeeting()
 )
 
-fun BsMeetingContext.toTransportDelete() = MeetingUpdateResponse(
-    responseType = "create",
+fun BsMeetingContext.toTransportDelete() = MeetingDeleteResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
@@ -51,7 +47,6 @@ fun BsMeetingContext.toTransportDelete() = MeetingUpdateResponse(
 
 
 fun BsMeetingContext.toTransportSearch() = MeetingSearchResponse(
-    responseType = "create",
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),

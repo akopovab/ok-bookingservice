@@ -1,5 +1,6 @@
-package ru.otuskotlin.public.bookingservice
+package ru.otuskotlin.public.bookingservice.api
 
+import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -7,6 +8,7 @@ import kotlin.test.assertEquals
 
 class RequestSerializationTest {
     private val request = MeetingCreateRequest(
+        requestType = "create",
         requestId = "requestId123id",
         debug = Debug(
             mode = RequestDebugMode.STUB,

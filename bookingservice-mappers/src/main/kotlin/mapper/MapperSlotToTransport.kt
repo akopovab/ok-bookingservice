@@ -13,7 +13,7 @@ fun BsSlotContext.toTransportMeeting(): ISlotResponse = when (val cmd = command)
 }
 
 private fun BsSlotContext.toTransportSearch() = SlotSearchResponse(
-    responseType = "search",
+    //responseType = "search",
     requestId = requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),

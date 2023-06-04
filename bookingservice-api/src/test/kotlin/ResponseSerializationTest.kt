@@ -1,6 +1,6 @@
-package ru.otuskotlin.public.bookingservice
+package ru.otuskotlin.public.bookingservice.api
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import kotlin.test.Test
 import ru.otuskotlin.public.bookingservice.api.models.*
 import kotlin.test.assertContains
