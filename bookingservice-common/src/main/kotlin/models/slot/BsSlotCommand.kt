@@ -1,5 +1,7 @@
 package ru.otuskotlin.public.bookingservice.common.models.slot
 
-enum class BsSlotCommand {
+import ru.otuskotlin.public.bookingservice.common.models.BsCommand
+
+enum class BsSlotCommand : BsCommand {
     NONE, SEARCH
 }

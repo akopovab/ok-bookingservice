@@ -1,8 +1,8 @@
 package ru.otuskotlin.public.bookingservice.mappers
 
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsMeetingContext
-import ru.otuskotlin.public.bookingservice.common.context.BsSlotContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode
 import ru.otuskotlin.public.bookingservice.common.models.stubs.BsStubs
 import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportSlot

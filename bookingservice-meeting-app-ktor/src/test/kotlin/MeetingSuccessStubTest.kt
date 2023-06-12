@@ -12,10 +12,10 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsMeetingContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingCommand
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
+import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
 import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
 
 @Test
@@ -40,7 +40,7 @@ class MeetingSuccessStubTest : FunSpec({
         requestId = BsRequestId("123")
         meetingResponse = MeetingStub.getMeeting()
         command = BsMeetingCommand.CREATE
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
     val updateRequest = MeetingUpdateRequest(
         requestType = "update",
@@ -62,7 +62,7 @@ class MeetingSuccessStubTest : FunSpec({
         requestId = BsRequestId("123")
         meetingResponse = MeetingStub.getMeeting()
         command = BsMeetingCommand.UPDATE
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
     val readRequest = MeetingReadRequest(
         requestType = "read",
@@ -80,7 +80,7 @@ class MeetingSuccessStubTest : FunSpec({
         requestId = BsRequestId("123")
         meetingResponse = MeetingStub.getMeeting()
         command = BsMeetingCommand.READ
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
 
     val deleteRequest = MeetingDeleteRequest(
@@ -98,7 +98,7 @@ class MeetingSuccessStubTest : FunSpec({
     val deleteResponse = BsMeetingContext().apply {
         requestId = BsRequestId("123")
         command = BsMeetingCommand.DELETE
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
     val searchRequest = MeetingSearchRequest(
         requestType = "search",
@@ -114,7 +114,7 @@ class MeetingSuccessStubTest : FunSpec({
         requestId = BsRequestId("123")
         meetingsResponse = MeetingStub.getMeetings()
         command = BsMeetingCommand.SEARCH
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
 
     test("Create request success stub") {
