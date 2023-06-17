@@ -12,10 +12,11 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsMeetingContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingCommand
 import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
+import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
 import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
 
 @Test

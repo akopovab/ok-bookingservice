@@ -1,6 +1,8 @@
 package ru.otuskotlin.public.bookingservice.common.models.meeting
 
-enum class BsMeetingCommand {
+import ru.otuskotlin.public.bookingservice.common.models.BsCommand
+
+enum class BsMeetingCommand : BsCommand {
     NONE,
     CREATE,
     DELETE,

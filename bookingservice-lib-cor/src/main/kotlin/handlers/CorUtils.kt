@@ -14,6 +14,3 @@ suspend fun <T> executeParallel(context: T, execs: List<ICorExec<T>>): Unit = co
         launch { it.exec(context) }
     }
 }
-
-
-suspend fun throwException(e: Throwable){throw e}

@@ -3,9 +3,8 @@ package ru.otuskotlin.public.bookingservice.meeting.app
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsMeetingContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.lib.log.common.IBsLogWrapper
 import ru.otuskotlin.public.bookingservice.mappers.fromTransportMeeting
 import ru.otuskotlin.public.bookingservice.mappers.log.toLog
@@ -30,7 +29,6 @@ suspend fun ApplicationCall.createMeeting(log :IBsLogWrapper, appSettings: BsApp
         )
     }
 }
-
 suspend fun ApplicationCall.readMeeting(log :IBsLogWrapper, appSettings: BsAppSettings) {
     log.doWithLogging("read") {
         val request = receive<MeetingReadRequest>()
@@ -48,7 +46,6 @@ suspend fun ApplicationCall.updateMeeting(log :IBsLogWrapper, appSettings: BsApp
     context.meetingResponse = MeetingStub.getMeeting()
     respond(context.toTransportMeeting())
 }
-
 
 suspend fun ApplicationCall.deleteMeeting(log :IBsLogWrapper, appSettings: BsAppSettings){
     val request = receive<MeetingDeleteRequest>()

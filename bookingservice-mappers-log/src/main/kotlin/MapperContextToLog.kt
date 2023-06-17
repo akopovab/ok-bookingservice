@@ -2,8 +2,8 @@ package ru.otuskotlin.public.bookingservice.mappers.log
 
 import kotlinx.datetime.Clock
 import ru.otuskotlin.public.bookingservice.api.log.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsMeetingContext
-import ru.otuskotlin.public.bookingservice.common.context.BsSlotContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.*
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
@@ -27,7 +27,7 @@ fun BsSlotContext.toLog(logId: String) = CommonLogModel(
 
 private fun BsMeetingContext.toMeetingLog() = BsMeetingLogModel(
     requestId = requestId.takeIf { it != BsRequestId.NONE }?.asString(),
-    operation = command.toLog(),
+    operation = (command as BsMeetingCommand).toLog(),
     requestMeeting = meetingRequest.toLog(),
     responseMeeting = meetingResponse.toLog(),
     requestMeetingSearch = meetingSearchRequest.takeIf { it != BsEmployeeId.NONE }
@@ -46,7 +46,7 @@ private fun BsMeeting.toLog() = MeetingLogModel(
 
 private fun BsSlotContext.toSlotLog() = BsSlotLogModel(
     requestId = requestId.takeIf { it != BsRequestId.NONE }?.asString(),
-    operation = command.toLog(),
+    operation = (command as BsSlotCommand).toLog(),
     requestSlot = slotRequest.takeIf { it != BsEmployeeId.NONE }?.let { LogEmployeeId(it.asString()) },
     responseSlot = slotResponse.toLog()
 )
@@ -64,7 +64,6 @@ private fun BsSlotCommand.toLog() = when (this) {
     BsSlotCommand.SEARCH -> BsSlotLogModel.Operation.SEARCH
     else -> null
 }
-
 
 private fun BsMeetingCommand.toLog() = when (this) {
     BsMeetingCommand.CREATE -> BsMeetingLogModel.Operation.CREATE

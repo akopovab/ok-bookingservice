@@ -1,10 +1,10 @@
 package ru.otuskotlin.public.bookingservice.lib.cor
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.Test
 import io.kotest.matchers.shouldBe
-import ru.otuskotlin.public.bookingservice.lib.cor.handle.CorChain
-import ru.otuskotlin.public.bookingservice.lib.cor.handle.CorWorker
+import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.*
+import ru.otuskotlin.public.bookingservice.lib.cor.handlers.CorChain
+import ru.otuskotlin.public.bookingservice.lib.cor.handlers.CorWorker
 
 enum class TestStatus { NONE, RUNNING, ERROR }
 
@@ -18,50 +18,136 @@ data class TestContext(
 //@Test
 class CorTest : FunSpec({
 
-    test("base test cor") {
-        val ctx = TestContext("Base test: ")
-        val handle: CorWorker<TestContext> = CorWorker(
-            title = "test 1",
+    test("CoR: basic handler test") {
+        val ctx = TestContext("Result handler:")
+        val handler: CorWorker<TestContext> = CorWorker(
+            title = "test №1",
             blockHandle = { workName += "result of one handle" }
         )
-        handle.exec(ctx)
-        ctx.workName shouldBe "Base test: result of one handle"
+        handler.exec(ctx)
+        ctx.workName shouldBe "Result handler: result of one handle"
     }
 
-    test("worker off") {
-        val ctx = TestContext("Base test: worker off")
-        val handle: CorWorker<TestContext> = CorWorker(
-            title = "test 2",
+    test("CoR: handler off test") {
+        val ctx = TestContext("Worker off")
+        val handler: CorWorker<TestContext> = CorWorker(
+            title = "test №2",
             blockOn = { workStatus == TestStatus.RUNNING },
             blockHandle = { workName += "result of one handle" }
         )
-        handle.exec(ctx)
-        ctx.workName shouldBe "Base test: worker off"
+        handler.exec(ctx)
+        ctx.workName shouldBe "Worker off"
     }
 
-    test("chain handler test") {
-        val ctx = TestContext("Chain test: ")
+    test("CoR: testing a chain of multiple handlers") {
+        val ctx = TestContext("Chain: ")
         val generateCtx: (String) -> CorWorker<TestContext> =
-            { str -> CorWorker<TestContext>(blockHandle = { workName += str }, title = "multiHandle") }
-        val handle: CorChain<TestContext> = CorChain(
-            title = "test 3",
+            { str -> CorWorker(blockHandle = { workName += str }, title = "multiHandle") }
+        val handler: CorChain<TestContext> = CorChain(
+            title = "test №3",
             handles = listOf(generateCtx("link one, "), generateCtx("link two"))
         )
-        handle.exec(ctx)
-        ctx.workName shouldBe "Chain test: link one, link two"
+        handler.exec(ctx)
+        ctx.workName shouldBe "Chain: link one, link two"
     }
 
-    test("exception handler") {
-        val ctx = TestContext(workName = "exception test: ")
-        val handle: CorWorker<TestContext> = CorWorker(
-            title = "base test",
-            blockHandle = {count += nullableString!!.length},
-            blockException = {if (it::class == NullPointerException()::class) workName += "NPE exception" }
+    test("CoR: testing exception handling") {
+        val ctx = TestContext(workName = "Exception: ")
+        val handler: CorWorker<TestContext> = CorWorker(
+            title = "test №4",
+            blockHandle = { count += nullableString!!.length },
+            blockException = { if (it::class == NullPointerException::class) workName += "NPE exception" }
         )
-        handle.exec(ctx)
-        ctx.workName shouldBe "exception test: NPE exception"
+        handler.exec(ctx)
+        ctx.workName shouldBe "Exception: NPE exception"
     }
 
+    /*dsl test*/
+
+    test("CoR DSL: basic handler test") {
+        val ctx = TestContext(workName = "Dsl create worker: ")
+        val handler = worker<TestContext> {
+            title = "test №5"
+            handle { count += 21 }
+        }.build()
+        handler.exec(ctx)
+        ctx.count shouldBe 21
+    }
+
+    test("CoR DSL: worker off") {
+        val ctx = TestContext(workName = "dsl worker off")
+        val handler = worker<TestContext> {
+            title = "test №6"
+            handle { workName += "result of one handler dsl" }
+            on { false }
+        }.build()
+        handler.exec(ctx)
+        ctx.workName shouldBe "dsl worker off"
+    }
+
+
+    test("CoR DSL: testing a chain of multiple handlers") {
+        val ctx = TestContext(count = 0)
+        val chain = chain<TestContext> {
+            worker {
+                title = "№6.1"
+                handle { count += 1 }
+                on { true }
+            }
+            worker {
+                title = "№6.2"
+                handle { count += 1 }
+                on { true }
+            }
+        }.build()
+        
+        chain.exec(ctx)
+        ctx.count shouldBe 2
+    }
+
+
+    test("CoR DSL: several mixed chains") {
+        val ctx = TestContext(count = 0)
+        val chain = chain<TestContext> {
+            worker {
+                title = "№7.1"
+                handle { count += 1 }
+                on { true }
+            }
+            worker {
+                title = "№7.2"
+                handle { count += 2 }
+                on { true }
+            }
+            sequential {
+                worker {
+                    title = "№7.3"
+                    handle { count += 3 }
+                    on { true }
+                }
+                worker {
+                    title = "№7.4"
+                    handle { count += 99 }
+                    on { false }
+                }
+                parallel {
+                    worker {
+                        title = "№7.5"
+                        handle { count += 4 }
+                        on { true }
+                    }
+                    worker {
+                        title = "№7.6"
+                        handle { count += 5 }
+                        on { true }
+                    }
+                }
+            }
+        }.build()
+
+        chain.exec(ctx)
+        ctx.count shouldBe 15
+    }
 
 
 })
