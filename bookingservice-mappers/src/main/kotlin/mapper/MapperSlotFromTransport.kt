@@ -1,7 +1,7 @@
 package ru.otuskotlin.public.bookingservice.mappers.mapper
 
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsSlotContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsEmployeeId
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotCommand

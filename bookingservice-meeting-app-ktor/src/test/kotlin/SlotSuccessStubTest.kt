@@ -11,10 +11,10 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.BsSlotContext
+import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotCommand
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
+import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
 import ru.otuskotlin.public.bookingservice.stubs.SlotStub
 
 class SlotSuccessStubTest : FunSpec({
@@ -33,7 +33,7 @@ class SlotSuccessStubTest : FunSpec({
         requestId = BsRequestId("123")
         slotResponse = SlotStub.getSlots()
         command = BsSlotCommand.SEARCH
-    }.toTransportMeeting()
+    }.toTransportSlot()
 
     test("search slot success stub") {
         testApplication {
