@@ -1,7 +1,6 @@
 package ru.otuskotlin.public.bookingservice.stubs
 
 import kotlinx.datetime.Instant
-import ru.otuskotlin.public.bookingservice.common.NONE
 import ru.otuskotlin.public.bookingservice.common.models.meeting.*
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotId

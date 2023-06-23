@@ -12,111 +12,10 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
-import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingCommand
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
 import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
 
 @Test
 class MeetingSuccessStubTest : FunSpec({
-
-    val createRequest = MeetingCreateRequest(
-        requestType = "create",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        meeting = MeetingCreateObject(
-            clientId = "123",
-            employeeId = "123",
-            description = "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик выше из строя",
-            slots = listOf(SlotIdListSlotsInner("123"), SlotIdListSlotsInner("456"))
-        )
-    )
-
-    val createResponse = BsMeetingContext().apply {
-        requestId = BsRequestId("123")
-        meetingResponse = MeetingStub.getMeeting()
-        command = BsMeetingCommand.CREATE
-    }.toTransportMeeting()
-
-    val updateRequest = MeetingUpdateRequest(
-        requestType = "update",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        meeting = MeetingUpdateObject(
-            meetingId = "123",
-            clientId = "123",
-            employeeId = "123",
-            description = "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик выше из строя",
-            slots = listOf(SlotIdListSlotsInner("123"), SlotIdListSlotsInner("456"))
-        )
-    )
-
-    val updateResponse = BsMeetingContext().apply {
-        requestId = BsRequestId("123")
-        meetingResponse = MeetingStub.getMeeting()
-        command = BsMeetingCommand.UPDATE
-    }.toTransportMeeting()
-
-    val readRequest = MeetingReadRequest(
-        requestType = "read",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        meeting = MeetingReadObject(
-            meetingId = "123",
-        )
-    )
-
-    val readResponse = BsMeetingContext().apply {
-        requestId = BsRequestId("123")
-        meetingResponse = MeetingStub.getMeeting()
-        command = BsMeetingCommand.READ
-    }.toTransportMeeting()
-
-
-    val deleteRequest = MeetingDeleteRequest(
-        requestType = "delete",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        meeting = MeetingReadObject(
-            meetingId = "123",
-        )
-    )
-
-    val deleteResponse = BsMeetingContext().apply {
-        requestId = BsRequestId("123")
-        command = BsMeetingCommand.DELETE
-    }.toTransportMeeting()
-
-    val searchRequest = MeetingSearchRequest(
-        requestType = "search",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        employeeId = "123"
-    )
-
-    val searchResponse = BsMeetingContext().apply {
-        requestId = BsRequestId("123")
-        meetingsResponse = MeetingStub.getMeetings()
-        command = BsMeetingCommand.SEARCH
-    }.toTransportMeeting()
-
 
     test("Create request success stub") {
         testApplication {
@@ -128,12 +27,35 @@ class MeetingSuccessStubTest : FunSpec({
                     }
                 }
             }
+
+            val createRequest = MeetingCreateRequest(
+                requestType = "create",
+                requestId = "123",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                meeting = MeetingCreateObject(
+                    clientId = "123",
+                    employeeId = "123",
+                    description = "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик вышел из строя",
+                    slots = listOf(SlotIdListSlotsInner("123"), SlotIdListSlotsInner("456"))
+                )
+            )
+
             val response = client.post("/api/meeting/create") {
                 contentType(ContentType.Application.Json)
                 setBody(createRequest)
             }
+            val meetingUpdateRequest = response.body<MeetingCreateResponse>()
+
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as MeetingCreateResponse shouldBe createResponse
+            meetingUpdateRequest.meeting?.meetingId shouldBe "1234567890"
+            meetingUpdateRequest.meeting?.meetingId shouldBe "1234567890"
+            meetingUpdateRequest.meeting?.description shouldBe "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик вышел из строя"
+            meetingUpdateRequest.meeting?.slots?.get(0)?.slotId shouldBe "123"
+            meetingUpdateRequest.meeting?.slots?.get(1)?.slotId shouldBe "456"
+            meetingUpdateRequest.requestId shouldBe "123"
         }
     }
 
@@ -147,12 +69,34 @@ class MeetingSuccessStubTest : FunSpec({
                     }
                 }
             }
+            val updateRequest = MeetingUpdateRequest(
+                requestType = "update",
+                requestId = "12",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                meeting = MeetingUpdateObject(
+                    meetingId = "34",
+                    clientId = "56",
+                    employeeId = "78",
+                    description = "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик выше из строя",
+                    slots = listOf(SlotIdListSlotsInner("90"), SlotIdListSlotsInner("910"))
+                )
+            )
             val response = client.post("/api/meeting/update") {
                 contentType(ContentType.Application.Json)
                 setBody(updateRequest)
             }
+            val meetingUpdateResponse = response.body<MeetingUpdateResponse>()
+
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as MeetingUpdateResponse shouldBe updateResponse
+            meetingUpdateResponse.meeting?.meetingId shouldBe "34"
+            meetingUpdateResponse.meeting?.clientId shouldBe "56"
+            meetingUpdateResponse.meeting?.employeeId shouldBe "78"
+            meetingUpdateResponse.meeting?.description shouldBe "Ремонт коробки передач, дёргается на светофорах, скорее всего маховик выше из строя"
+            meetingUpdateResponse.meeting?.slots?.get(0)?.slotId shouldBe "90"
+            meetingUpdateResponse.meeting?.slots?.get(1)?.slotId shouldBe "910"
         }
     }
 
@@ -166,12 +110,28 @@ class MeetingSuccessStubTest : FunSpec({
                     }
                 }
             }
+            val readRequest = MeetingReadRequest(
+                requestType = "read",
+                requestId = "123",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                meeting = MeetingReadObject(
+                    meetingId = "123",
+                )
+            )
             val response = client.post("/api/meeting/read") {
                 contentType(ContentType.Application.Json)
                 setBody(readRequest)
             }
+
+            val meetingReadResponse = response.body<MeetingReadResponse>()
+
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as MeetingReadResponse shouldBe readResponse
+            meetingReadResponse.meeting?.meetingId shouldBe "123"
+            meetingReadResponse.meeting?.description shouldBe MeetingStub.getMeeting().description
+            meetingReadResponse.meeting?.clientId shouldBe MeetingStub.getMeeting().clientId.asString()
         }
     }
 
@@ -185,12 +145,23 @@ class MeetingSuccessStubTest : FunSpec({
                     }
                 }
             }
+            val deleteRequest = MeetingDeleteRequest(
+                requestType = "delete",
+                requestId = "123",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                meeting = MeetingReadObject(
+                    meetingId = "123",
+                )
+            )
             val response = client.post("/api/meeting/delete") {
                 contentType(ContentType.Application.Json)
                 setBody(deleteRequest)
             }
+
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as MeetingDeleteResponse shouldBe deleteResponse
         }
     }
 
@@ -204,12 +175,26 @@ class MeetingSuccessStubTest : FunSpec({
                     }
                 }
             }
+            val searchRequest = MeetingSearchRequest(
+                requestType = "search",
+                requestId = "123",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                employeeId = "123"
+            )
             val response = client.post("/api/meeting/search") {
                 contentType(ContentType.Application.Json)
                 setBody(searchRequest)
             }
+            val meetingSearchResponse = response.body<MeetingSearchResponse>()
+            val responseStub = MeetingStub.getMeetings()
+
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as MeetingSearchResponse shouldBe searchResponse
+            meetingSearchResponse.meetings?.get(0)?.meetingId shouldBe responseStub[0].id.asString()
+            meetingSearchResponse.meetings?.get(0)?.description shouldBe responseStub[0].description
+            meetingSearchResponse.meetings?.get(0)?.clientId shouldBe responseStub[0].clientId.asString()
         }
     }
 

@@ -6,7 +6,7 @@ import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.*
 import ru.otuskotlin.public.bookingservice.lib.cor.handlers.CorChain
 import ru.otuskotlin.public.bookingservice.lib.cor.handlers.CorWorker
 
-enum class TestStatus { NONE, RUNNING, ERROR }
+enum class TestStatus { NONE, RUNNING }
 
 data class TestContext(
     var workName: String = "",
@@ -19,7 +19,7 @@ data class TestContext(
 class CorTest : FunSpec({
 
     test("CoR: basic handler test") {
-        val ctx = TestContext("Result handler:")
+        val ctx = TestContext("Result handler: ")
         val handler: CorWorker<TestContext> = CorWorker(
             title = "test №1",
             blockHandle = { workName += "result of one handle" }
@@ -100,7 +100,7 @@ class CorTest : FunSpec({
                 on { true }
             }
         }.build()
-        
+
         chain.exec(ctx)
         ctx.count shouldBe 2
     }
@@ -117,13 +117,13 @@ class CorTest : FunSpec({
             worker {
                 title = "№7.2"
                 handle { count += 2 }
-                on { true }
+                on { count == 1 }
             }
             sequential {
                 worker {
                     title = "№7.3"
                     handle { count += 3 }
-                    on { true }
+                    on { count == 3 }
                 }
                 worker {
                     title = "№7.4"
@@ -141,12 +141,30 @@ class CorTest : FunSpec({
                         handle { count += 5 }
                         on { true }
                     }
+                    worker("7.7") { count += 10 }
+                    chain {
+                        worker {
+                            title = "№7.8"
+                            handle { count += 5 }
+                            on { true }
+                        }
+                        worker("7.9") { count += 15 }
+                    }
+                    sequential {
+                        worker {
+                            title = "№7.3"
+                            handle { count += 5 }
+                            on { true }
+                        }
+                    }
+
+
                 }
             }
         }.build()
 
         chain.exec(ctx)
-        ctx.count shouldBe 15
+        ctx.count shouldBe 50
     }
 
 

@@ -21,4 +21,5 @@ data class BsSlotContext (
 
     var slotRequest :BsEmployeeId = BsEmployeeId.NONE,
     var slotResponse: MutableSet<BsSlot> = mutableSetOf()
+
     ) : BsContext

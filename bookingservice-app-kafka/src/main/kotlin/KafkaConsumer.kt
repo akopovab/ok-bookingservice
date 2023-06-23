@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.ConsumerRecords
@@ -18,27 +17,13 @@ import java.time.Duration
 import java.util.*
 import mu.KotlinLogging
 import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategy
-import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
-import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
-import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
-import ru.otuskotlin.public.bookingservice.stubs.SlotStub
 
 
 private val log = KotlinLogging.logger {}
 
-class BsProcessor {
-    fun exec(ctx: BsContext) {
-        when (ctx) {
-            is BsMeetingContext -> ctx.meetingResponse = MeetingStub.getMeeting()
-            is BsSlotContext -> ctx.slotResponse = SlotStub.getSlots()
-        }
-    }
-}
-
 class AppKafkaConsumer(
     private val config: KafkaConfig,
     consumerStrategies: List<ConsumerStrategy<out BsContext>>,
-    private val processor: BsProcessor = BsProcessor(),
     private val consumer: Consumer<String, String> = config.createKafkaConsumer(),
     private val producer: Producer<String, String> = config.createKafkaProducer()
 ) {
@@ -68,16 +53,11 @@ class AppKafkaConsumer(
                         log.info { "process ${record.key()} from ${record.topic()}:\n${record.value()}" }
                         val (_, outputTopic, strategy) = topicsAndStrategyByInputTopic[record.topic()]
                             ?: throw RuntimeException("Receive message from unknown topic ${record.topic()}")
-                        val ctx = when (record.topic().lowercase()) {
-                            config.kafkaTopicInMeeting -> BsMeetingContext()
-                            config.kafkaTopicInSlot -> BsSlotContext()
-                            else -> throw RuntimeException("Unknown topic")
-                        }.apply { this.timeStart = Clock.System.now() }
-
-                        strategy.deserialize(record.value(), ctx)
-                        processor.exec(ctx)
-
-                        sendResponse(ctx, strategy, outputTopic)
+                        strategy.apply {
+                            deserialize(record.value())
+                            processor()
+                        }
+                        sendResponse(strategy, outputTopic)
                     } catch (ex: Exception) {
                         log.error(ex) { "error" }
                     }
@@ -97,8 +77,8 @@ class AppKafkaConsumer(
         }
     }
 
-    private fun sendResponse(context: BsContext, strategy: ConsumerStrategy<out BsContext>, outputTopic: String) {
-        val json = strategy.serialize(context)
+    private fun sendResponse(strategy: ConsumerStrategy<out BsContext>, outputTopic: String) {
+        val json = strategy.serialize()
         val resRecord = ProducerRecord(
             outputTopic,
             UUID.randomUUID().toString(),

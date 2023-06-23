@@ -1,3 +1,5 @@
+package ru.otuskotlin.public.bookingservice.lib.logback
+
 import ch.qos.logback.classic.Logger
 import net.logstash.logback.argument.StructuredArguments
 import org.slf4j.Marker

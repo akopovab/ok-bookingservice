@@ -10,7 +10,7 @@ class CorWorker<T>(
     blockException: suspend T.(Throwable) -> Unit = {throw it}
 ) : CorExec<T>(title, description, blockOn, blockException) {
 
-    override suspend fun T.handle() = blockHandle()
+    override suspend fun handle(context: T) = blockHandle(context)
 
 }
 

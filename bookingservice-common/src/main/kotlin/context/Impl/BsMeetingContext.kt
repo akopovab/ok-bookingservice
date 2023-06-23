@@ -23,5 +23,12 @@ data class BsMeetingContext  (
     var meetingRequest :BsMeeting = BsMeeting(),
 
     var meetingResponse :BsMeeting = BsMeeting(),
-    var meetingsResponse :MutableList<BsMeeting> = mutableListOf()
+    var meetingsResponse :MutableList<BsMeeting> = mutableListOf(),
+
+    var meetingSearchValidation :BsEmployeeId = BsEmployeeId.NONE,
+    var meetingRequestValidation :BsMeeting = BsMeeting(),
+
+
+
+
 ) :BsContext

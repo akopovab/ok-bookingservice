@@ -1,3 +1,5 @@
+package ru.otuskotlin.public.bookingservice.lib.logback
+
 import org.slf4j.Marker
 
 class DefaultMarker(

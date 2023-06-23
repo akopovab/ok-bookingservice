@@ -6,7 +6,6 @@ import ru.otuskotlin.public.bookingservice.api.models.RequestDebugStubs
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode
 import ru.otuskotlin.public.bookingservice.common.models.stubs.BsStubs
 
-
 fun Debug?.transportToWorkMode(): BsWorkMode = when (this?.mode) {
     RequestDebugMode.STUB -> BsWorkMode.STUB
     RequestDebugMode.TEST -> BsWorkMode.TEST
@@ -24,5 +23,5 @@ fun Debug?.transportToStubCase(): BsStubs = when (this?.stub) {
     RequestDebugStubs.NOT_FOUND -> BsStubs.NOT_FOUND
     RequestDebugStubs.BAD_SLOT_DATE -> BsStubs.BAD_SLOT_DATE
     RequestDebugStubs.SLOT_ID_RESERVED -> BsStubs.SLOT_ID_RESERVED
-    null -> BsStubs.NONE
+    else -> BsStubs.NONE
 }

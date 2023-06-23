@@ -1,7 +1,5 @@
 package ru.otuskotlin.public.bookingservice.lib.cor
 
-import ru.otuskotlin.public.bookingservice.lib.cor.dsl.ICorExecDsl
-
 abstract class CorExec<T>(
     override val title: String,
     override val description: String = "",
@@ -9,12 +7,12 @@ abstract class CorExec<T>(
     private val blockException: suspend T.(Throwable) -> Unit = {throw it}
 ) : ICorExec<T> {
 
-    protected abstract suspend fun T.handle()
+    protected abstract suspend fun handle(context: T)
 
     override suspend fun exec(context: T) {
         if (context.blockOn()) {
             try {
-                context.handle()
+                handle(context)
             } catch (e: Throwable) {
                 context.blockException(e)
             }

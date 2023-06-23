@@ -1,3 +1,6 @@
+package ru.otuskotlin.public.bookingservice.lib.logback
+
+
 import ch.qos.logback.classic.Logger
 import org.slf4j.LoggerFactory
 import ru.otuskotlin.public.bookingservice.lib.log.common.IBsLogWrapper
@@ -9,5 +12,5 @@ fun mpLoggerLogback(logger: Logger): IBsLogWrapper = BsLogWrapperLogback(
 )
 
 fun mpLoggerLogback(clazz: KClass<*>): IBsLogWrapper = mpLoggerLogback(LoggerFactory.getLogger(clazz.java) as Logger)
-@Suppress("unused")
+
 fun mpLoggerLogback(loggerId: String): IBsLogWrapper = mpLoggerLogback(LoggerFactory.getLogger(loggerId) as Logger)

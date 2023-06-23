@@ -1,6 +1,7 @@
 package ru.otuskotlin.public.bookingservice.lib.cor.dsl
 
 
+@CorDslMarker
 abstract class CorExecDsl<T>: ICorExecDsl<T> {
     override var title: String = ""
     override var description: String = ""

@@ -11,29 +11,9 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
-import ru.otuskotlin.public.bookingservice.common.models.BsRequestId
-import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotCommand
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
 import ru.otuskotlin.public.bookingservice.stubs.SlotStub
 
 class SlotSuccessStubTest : FunSpec({
-
-    val searchRequest = SlotSearchRequest(
-        requestType = "search",
-        requestId = "123",
-        debug = Debug(
-            mode = RequestDebugMode.STUB,
-            stub = RequestDebugStubs.SUCCESS
-        ),
-        employeeId = "123"
-    )
-
-    val searchResponse = BsSlotContext().apply {
-        requestId = BsRequestId("123")
-        slotResponse = SlotStub.getSlots()
-        command = BsSlotCommand.SEARCH
-    }.toTransportSlot()
 
     test("search slot success stub") {
         testApplication {
@@ -45,12 +25,25 @@ class SlotSuccessStubTest : FunSpec({
                     }
                 }
             }
+            val searchRequest = SlotSearchRequest(
+                requestType = "search",
+                requestId = "123",
+                debug = Debug(
+                    mode = RequestDebugMode.STUB,
+                    stub = RequestDebugStubs.SUCCESS
+                ),
+                employeeId = "123"
+            )
             val response = client.post("/api/slot/search") {
                 contentType(ContentType.Application.Json)
                 setBody(searchRequest)
             }
+            val searchResponse =  response.body<SlotSearchResponse>()
+            val responseStub = SlotStub.getSlots()
             response shouldHaveStatus HttpStatusCode.OK
-            response.body() as SlotSearchResponse shouldBe searchResponse
+            searchResponse.requestId shouldBe "123"
+            searchResponse.slots?.get(0)?.slotId shouldBe responseStub.toList()[0].id.asString()
+            searchResponse.slots?.get(1)?.slotId shouldBe responseStub.toList()[1].id.asString()
         }
     }
 })

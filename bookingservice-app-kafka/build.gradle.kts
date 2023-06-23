@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":bookingservice-api"))
     implementation(project(":bookingservice-mappers"))
     implementation(project(":bookingservice-stubs"))
+    implementation(project(":bookingservice-business"))
     // test
     testImplementation(kotlin("test-junit"))
 }

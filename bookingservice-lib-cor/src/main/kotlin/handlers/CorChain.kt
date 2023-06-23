@@ -12,7 +12,8 @@ class CorChain<T>(
     blockException: suspend T.(Throwable) -> Unit = {}
 ) : CorExec<T>(title, description, blockOn, blockException) {
 
-    override suspend fun T.handle() = strategy(this, handles)
+    override suspend fun handle(context :T) = strategy(context, handles)
+
 
 }
 

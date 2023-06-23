@@ -57,6 +57,7 @@ dependencies {
     implementation(project(":bookingservice-lib-log-common"))
     implementation(project(":bookingservice-mappers-log"))
     implementation(project(":bookingservice-api-log"))
+    implementation(project(":bookingservice-business"))
 
 
     testImplementation(kotlin("test-junit5"))
