@@ -7,7 +7,7 @@ import ru.otuskotlin.public.bookingservice.common.models.BsState
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotCommand
 import ru.otuskotlin.public.bookingservice.mappers.exception.BsUnknownSlotCommand
 
-fun BsSlotContext.toTransportSlot(): ISlotResponse = when (val cmd = command as BsSlotCommand) {
+fun BsSlotContext.toTransportMeeting(): ISlotResponse = when (val cmd = command as BsSlotCommand) {
     BsSlotCommand.SEARCH -> toTransportSearch()
     BsSlotCommand.NONE -> throw BsUnknownSlotCommand(cmd)
 }
@@ -15,7 +15,7 @@ fun BsSlotContext.toTransportSlot(): ISlotResponse = when (val cmd = command as 
 private fun BsSlotContext.toTransportSearch() = SlotSearchResponse(
     //responseType = "search",
     requestId = requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     slots = slotResponse.toTransportSlots()
 

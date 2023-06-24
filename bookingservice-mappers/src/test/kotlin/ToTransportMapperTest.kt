@@ -10,7 +10,7 @@ import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotCommand
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotId
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
-import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportSlot
+import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -39,7 +39,7 @@ class ToTransportMapperTest {
             )
         )
 
-        val resp = context.toTransportSlot() as MeetingCreateResponse
+        val resp = context.toTransportMeeting() as MeetingCreateResponse
 
         assertEquals("123", resp.requestId)
         assertEquals(resp.meeting?.meetingId, "111")
@@ -69,7 +69,7 @@ class ToTransportMapperTest {
             )
 
         )
-        val resp = context.toTransportSlot() as SlotSearchResponse
+        val resp = context.toTransportMeeting() as SlotSearchResponse
 
         assertEquals("123", resp.requestId)
         assertEquals(resp.slots?.firstOrNull()?.slotId, "slotId123")

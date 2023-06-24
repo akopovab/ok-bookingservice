@@ -1,4 +1,4 @@
-package ru.otuskotlin.public.bookingservice.mappers
+package ru.otuskotlin.public.bookingservice.mappers.mapper
 
 import ru.otuskotlin.public.bookingservice.api.models.*
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
@@ -7,8 +7,6 @@ import ru.otuskotlin.public.bookingservice.common.models.meeting.*
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotId
 import ru.otuskotlin.public.bookingservice.mappers.exception.UnknownRequestClass
-import ru.otuskotlin.public.bookingservice.mappers.mapper.transportToStubCase
-import ru.otuskotlin.public.bookingservice.mappers.mapper.transportToWorkMode
 
 fun BsMeetingContext.fromTransportMeeting(request: IMeetingRequest) = when (request) {
     is MeetingCreateRequest -> fromTransport(request)

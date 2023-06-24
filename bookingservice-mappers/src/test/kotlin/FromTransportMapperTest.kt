@@ -5,6 +5,7 @@ import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode
 import ru.otuskotlin.public.bookingservice.common.models.stubs.BsStubs
+import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportMeeting
 import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportSlot
 import kotlin.test.Test
 import kotlin.test.assertEquals

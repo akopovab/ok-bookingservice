@@ -9,7 +9,7 @@ import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
 import ru.otuskotlin.public.bookingservice.mappers.exception.BsUnknownMeetingCommand
 
-fun BsMeetingContext.toTransportSlot(): IMeetingResponse = when (val cmd :BsMeetingCommand = command as BsMeetingCommand) {
+fun BsMeetingContext.toTransportMeeting(): IMeetingResponse = when (val cmd :BsMeetingCommand = command as BsMeetingCommand) {
     BsMeetingCommand.CREATE -> toTransportCreate()
     BsMeetingCommand.READ -> toTransportRead()
     BsMeetingCommand.UPDATE -> toTransportUpdate()
@@ -21,40 +21,40 @@ fun BsMeetingContext.toTransportSlot(): IMeetingResponse = when (val cmd :BsMeet
 
 fun BsMeetingContext.toTransportCreate() = MeetingCreateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    meeting = meetingResponse.toTransportSlot()
+    meeting = meetingResponse.toTransportMeeting()
 )
 
 fun BsMeetingContext.toTransportRead() = MeetingReadResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    meeting = meetingResponse.toTransportSlot()
+    meeting = meetingResponse.toTransportMeeting()
 )
 
 fun BsMeetingContext.toTransportUpdate() = MeetingUpdateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
-    meeting = meetingResponse.toTransportSlot()
+    meeting = meetingResponse.toTransportMeeting()
 )
 
 fun BsMeetingContext.toTransportDelete() = MeetingDeleteResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
 )
 
 
 fun BsMeetingContext.toTransportSearch() = MeetingSearchResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == BsState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = if (state == BsState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,
     errors = errors.toTransportErrors(),
     meetings = meetingsResponse.toTransportMeetings()
 )
 
-fun BsMeeting.toTransportSlot(): MeetingResponseObject = MeetingResponseObject(
+fun BsMeeting.toTransportMeeting(): MeetingResponseObject = MeetingResponseObject(
     meetingId = id.takeIf { it != BsMeetingId.NONE }?.asString(),
     clientId = clientId.takeIf { it != BsClientId.NONE }?.asString(),
     employeeId = employeeId.takeIf { it != BsEmployeeId.NONE }?.asString(),
@@ -66,13 +66,13 @@ fun BsMeeting.toTransportSlot(): MeetingResponseObject = MeetingResponseObject(
 
 private fun MutableSet<BsMeetingPermissions>.toTransportPermissions() = this.map { it.toTransportPermission() }.toSet()
 
-fun MutableSet<BsSlot>.toTransportSlots() = this.map { it.toTransportSlot() }.toList().takeIf { it.isNotEmpty() }
+fun MutableSet<BsSlot>.toTransportSlots() = this.map { it.toTransportMeeting() }.toList().takeIf { it.isNotEmpty() }
 
 private fun MutableList<BsError>.toTransportErrors() = this.map { it.toTransportError() }.toList().takeIf { it.isNotEmpty() }
 
-private fun MutableList<BsMeeting>.toTransportMeetings() = this.map { it.toTransportSlot() }.toList().takeIf { it.isNotEmpty() }
+private fun MutableList<BsMeeting>.toTransportMeetings() = this.map { it.toTransportMeeting() }.toList().takeIf { it.isNotEmpty() }
 
-private fun BsSlot.toTransportSlot() = BaseSlots(
+private fun BsSlot.toTransportMeeting() = BaseSlots(
     slotId = id.asString(),
     startDate = startDate.toString(),
     endDate = endDate.toString(),

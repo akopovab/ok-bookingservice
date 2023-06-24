@@ -1,0 +1,129 @@
+openapi: 3.0.4
+info:
+  title: "Bookingservice log modesl"
+  description: "Models log for bookingservice"
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+paths: {}
+
+components:
+  schemas:
+
+    CommonLogModel:
+      title: Общая модель лога
+      description: Общая модель лога для всех микросервисов системы
+      type: object
+      properties:
+        messageTime:
+          type: string
+        logId:
+          type: string
+        serviceName:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorLogModel'
+        meeting:
+          $ref: '#/components/schemas/BsMeetingLogModel'
+        slot:
+          $ref: '#/components/schemas/BsSlotLogModel'
+
+    ErrorLogModel:
+      title: Модель лога для ошибки
+      type: object
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+        code:
+          type: string
+        level:
+          type: string
+
+    BsMeetingLogModel:
+      title: Модель лога встречи
+      type: object
+      properties:
+        requestId:
+          type: string
+        operation:
+          type: string
+          enum:
+            - create
+            - update
+            - delete
+            - search
+            - read
+        requestMeeting:
+          $ref: '#/components/schemas/MeetingLogModel'
+        responseMeeting:
+          $ref: '#/components/schemas/MeetingLogModel'
+        requestMeetingSearch:
+          $ref: '#/components/schemas/LogEmployeeId'
+        responseMeetings:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeetingLogModel'
+
+    BsSlotLogModel:
+      title: Модель лога слота
+      type: object
+      properties:
+        requestId:
+          type: string
+        operation:
+          enum:
+            - search
+        requestSlot:
+          $ref: '#/components/schemas/LogEmployeeId'
+        responseSlot:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotLogModel'
+
+    LogEmployeeId:
+      type: object
+      properties:
+        employeeId:
+          type: string
+
+    SlotLogModel:
+      title: модель слота для лога
+      type: object
+      properties:
+        slotId:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        slotStatus:
+          type: string
+
+    MeetingLogModel:
+      title: модель встречи для лога
+      type: object
+      properties:
+        meetingId:
+          type: string
+        clientId:
+          type: string
+        employeeId:
+          type: string
+        description:
+          type: string
+        meetingStatus:
+          type: string
+        meetingPermissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotLogModel'

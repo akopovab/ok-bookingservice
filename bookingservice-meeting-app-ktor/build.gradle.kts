@@ -24,7 +24,7 @@ repositories {
 }
 
 application {
-    mainClass.set("package ru.otuskotlin.public.bookingservice.meeting.ApplicationKt")
+    mainClass.set("ru.otuskotlin.public.bookingservice.meeting.ApplicationKt")
 }
 
 dependencies {
@@ -34,21 +34,31 @@ dependencies {
 
     implementation(ktor("jackson", prefix = "serialization"))
     implementation(ktor("content-negotiation"))
-
     implementation(ktor("locations"))
     implementation(ktor("caching-headers"))
     implementation(ktor("call-logging"))
     implementation(ktor("auto-head-response"))
     implementation(ktor("cors"))
     implementation(ktor("default-headers"))
-    implementation(ktor("websockets"))
-
+    implementation(ktor("config-yaml"))
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
+
+
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation(project(mapOf("path" to ":bookingservice-common")))
-    implementation(project(mapOf("path" to ":bookingservice-api")))
-    implementation(project(mapOf("path" to ":bookingservice-mappers")))
-    implementation(project(mapOf("path" to ":bookingservice-stubs")))
+    implementation("com.sndyuk:logback-more-appenders:1.8.8")
+    implementation("org.fluentd:fluent-logger:0.3.4")
+
+
+    implementation(project(":bookingservice-common"))
+    implementation(project(":bookingservice-api"))
+    implementation(project(":bookingservice-mappers"))
+    implementation(project(":bookingservice-stubs"))
+    implementation(project(":bookingservice-lib-logback"))
+    implementation(project(":bookingservice-lib-log-common"))
+    implementation(project(":bookingservice-mappers-log"))
+    implementation(project(":bookingservice-api-log"))
+    implementation(project(":bookingservice-business"))
+
 
     testImplementation(kotlin("test-junit5"))
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
@@ -56,7 +66,6 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-assertions-ktor:${ktorKotestExtensionVersion}")
     testImplementation(ktor("test-host"))
     testImplementation(ktor("content-negotiation", prefix = "client-"))
-    testImplementation(ktor("websockets", prefix = "client-"))
 }
 
 tasks {

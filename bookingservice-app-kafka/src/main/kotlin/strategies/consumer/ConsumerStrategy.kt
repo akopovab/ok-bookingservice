@@ -6,6 +6,10 @@ import ru.otuskotlin.public.bookingservice.common.context.BsContext
 
 interface ConsumerStrategy<T> {
     fun topics(config: KafkaConfig): InputOutputTopics
-    fun serialize(source: BsContext): String
-    fun deserialize(value: String, target: BsContext)
+
+    fun serialize(): String
+
+    fun deserialize(value: String)
+
+    suspend fun processor()
 }

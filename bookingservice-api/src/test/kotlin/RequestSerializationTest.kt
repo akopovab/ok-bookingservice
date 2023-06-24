@@ -1,6 +1,5 @@
 package ru.otuskotlin.public.bookingservice.api
 
-import ru.otuskotlin.public.bookingservice.api.apiV1Mapper
 import ru.otuskotlin.public.bookingservice.api.models.*
 import kotlin.test.Test
 import kotlin.test.assertContains

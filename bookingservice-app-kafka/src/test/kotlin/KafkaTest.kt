@@ -1,3 +1,5 @@
+package ru.otuskotlin.public.bookingservice.app.kafka
+
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
@@ -10,10 +12,9 @@ import ru.otuskotlin.public.bookingservice.api.apiMeetingResponseDeserialize
 import ru.otuskotlin.public.bookingservice.api.apiSlotRequestSerialize
 import ru.otuskotlin.public.bookingservice.api.apiSlotResponseDeserialize
 import ru.otuskotlin.public.bookingservice.api.models.*
-import ru.otuskotlin.public.bookingservice.app.kafka.AppKafkaConsumer
 import ru.otuskotlin.public.bookingservice.app.kafka.configuration.KafkaConfig
-import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.impl.ConsumerStrategyMeeting
-import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.impl.ConsumerStrategySlot
+import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategyMeeting
+import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategySlot
 import java.util.*
 import kotlin.test.assertEquals
 
