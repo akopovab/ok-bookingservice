@@ -1,9 +1,8 @@
 package ru.otuskotlin.public.bookingservice.common.repo
 
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsEmployeeId
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
 
-data class DdEmployeeIdRequest(
+data class DbEmployeeIdRequest(
     val id : BsEmployeeId
 )
 

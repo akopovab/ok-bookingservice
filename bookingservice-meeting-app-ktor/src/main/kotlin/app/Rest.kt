@@ -5,7 +5,7 @@ import io.ktor.server.routing.*
 import ru.otuskotlin.public.bookingservice.meeting.BsAppSettings
 
 fun Route.meeting(appSettings: BsAppSettings) {
-    val logger = appSettings.logSettings.loggerProvider.logger(Route::meeting)
+    val logger = appSettings.corSettings.loggerProvider.logger(Route::meeting)
     route("meeting") {
         post("create") {
             call.createMeeting(logger, appSettings)
@@ -26,7 +26,7 @@ fun Route.meeting(appSettings: BsAppSettings) {
 }
 
 fun Route.slot(appSettings: BsAppSettings) {
-    val logger = appSettings.logSettings.loggerProvider.logger(Route::slot)
+    val logger = appSettings.corSettings.loggerProvider.logger(Route::slot)
     route("slot") {
         post("search") {
             call.searchSlot(logger, appSettings)

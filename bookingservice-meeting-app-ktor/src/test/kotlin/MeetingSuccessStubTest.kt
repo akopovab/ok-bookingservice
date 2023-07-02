@@ -152,8 +152,9 @@ class MeetingSuccessStubTest : FunSpec({
                     mode = RequestDebugMode.STUB,
                     stub = RequestDebugStubs.SUCCESS
                 ),
-                meeting = MeetingReadObject(
+                meeting = MeetingDeleteObject(
                     meetingId = "123",
+                    meetingLock = "456"
                 )
             )
             val response = client.post("/api/meeting/delete") {

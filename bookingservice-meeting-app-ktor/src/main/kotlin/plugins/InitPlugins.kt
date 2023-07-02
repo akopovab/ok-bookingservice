@@ -1,7 +1,6 @@
 package ru.otuskotlin.public.bookingservice.meeting.plugins
 
 
-import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.autohead.*
@@ -35,7 +34,7 @@ fun Application.initPlugins(appSettings: BsAppSettings) {
     install(CallLogging) {
         level = Level.INFO
         val wrapper = appSettings
-            .logSettings
+            .corSettings
             .loggerProvider
             .logger(clazz) as? BsLogWrapperLogback
         wrapper?.logger?.also { logger = it }

@@ -1,3 +1,7 @@
 package ru.otuskotlin.public.bookingservice.common.repo
 
-data class DbMeetingRequest()
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
+
+data class DbMeetingRequest(
+    val meeting :BsMeeting
+)

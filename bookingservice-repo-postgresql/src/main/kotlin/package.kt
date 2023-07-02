@@ -1,1 +1,1 @@
-package ru.otuskotlin.public.bookingservice.repo.tests
+package ru.otuskotlin.public.bookingservice.repo.postgresql

@@ -1,4 +1,4 @@
-package workers.repo
+package ru.otuskotlin.public.bookingservice.business.workers.repo
 
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState
@@ -9,7 +9,7 @@ import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.on
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.worker
 import ru.otuskotlin.public.bookingservice.stubs.addError
 
-fun CorChainDsl<BsMeetingContext>.repoCreate(title: String) = worker {
+fun CorChainDsl<BsMeetingContext>.repoMeetingCreate(title: String) = worker {
     this.title = title
     on { state == BsState.RUNNING }
     handle {
@@ -18,6 +18,7 @@ fun CorChainDsl<BsMeetingContext>.repoCreate(title: String) = worker {
             meetingRepoDone = result.data!!
         } else if (result.errors.isNotEmpty()) {
             addError(result.errors)
+            state = BsState.FAILING
         }
     }
 }

@@ -27,7 +27,8 @@ object MeetingStub {
                 slotStatus = BsSlotStatus.RESERVED
             )
         ),
-        meetingPermissions = mutableSetOf(BsMeetingPermissions.READ)
+        meetingPermissions = mutableSetOf(BsMeetingPermissions.READ),
+        lock = BsMeetingLock("44444444")
     )
 
     private val bsMeetingCaseTwo = BsMeeting(
@@ -49,13 +50,32 @@ object MeetingStub {
                 slotStatus = BsSlotStatus.RESERVED
             )
         ),
-        meetingPermissions = mutableSetOf(BsMeetingPermissions.READ)
+        meetingPermissions = mutableSetOf(BsMeetingPermissions.READ),
+        lock = BsMeetingLock("333444")
+    )
+
+    private val bsMeetingForUpdate = BsMeeting(
+        id = BsMeetingId("000001111111"),
+        employeeId = BsEmployeeId("444"),
+        clientId = BsClientId("22222222222"),
+        description = "Запись на стрижку",
+        slots = mutableSetOf(
+            BsSlot(
+                id = BsSlotId("123000111"),
+            ), BsSlot(
+                id = BsSlotId("123000222"),
+            )
+        ),
+        lock = BsMeetingLock("test123test")
     )
 
 
     fun getMeeting() = bsMeetingCaseOne
 
     fun getMeetings() = mutableListOf(bsMeetingCaseOne, bsMeetingCaseTwo)
+
+    fun getMeetingForUpdate() = bsMeetingForUpdate
+
 
 
 }

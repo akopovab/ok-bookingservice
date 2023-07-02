@@ -1,3 +1,12 @@
 package ru.otuskotlin.public.bookingservice.common.repo
 
-data class DbMeetingIdRequest()
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingId
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingLock
+
+data class DbMeetingIdRequest(
+    val id : BsMeetingId,
+    val lock :BsMeetingLock = BsMeetingLock.NONE
+){
+    constructor(meeting : BsMeeting): this(meeting.id, meeting.lock)
+}

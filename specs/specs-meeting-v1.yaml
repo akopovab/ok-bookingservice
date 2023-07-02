@@ -246,6 +246,10 @@ components:
       type: string
       description: Индентификатор клиента
 
+    MeetingLock:
+      type: string
+      description: Версия оптимистичной блокировки
+
     MeetingStatus:
       type: string
       description: Статус встречи
@@ -300,6 +304,15 @@ components:
         meetingId:
           $ref: '#/components/schemas/MeetingId'
 
+    MeetingDeleteObject:
+      description: Объект для удаления встречи, включает в себя id встречи
+      type: object
+      properties:
+        meetingId:
+          $ref: '#/components/schemas/MeetingId'
+        meetingLock:
+          $ref: '#/components/schemas/MeetingLock'
+
     MeetingUpdateObject:
       description: Объект для обновления встречи, включает в себя id, объект создания встречи и статус
       allOf:
@@ -309,6 +322,8 @@ components:
           properties:
             status:
               $ref: '#/components/schemas/MeetingStatus'
+            meetingLock:
+              $ref: '#/components/schemas/MeetingLock'
 
     MeetingResponseObject:
       description: Полные данные встречи включая статус и права
@@ -327,6 +342,8 @@ components:
               uniqueItems: true
               items:
                 $ref: '#/components/schemas/MeetingPermissions'
+            meetingLock:
+              $ref: '#/components/schemas/MeetingLock'
 
 #MeetingRequest:
     MeetingCreateRequest:
@@ -367,7 +384,7 @@ components:
         - type: object
           properties:
             meeting:
-              $ref: '#/components/schemas/MeetingReadObject'
+              $ref: '#/components/schemas/MeetingDeleteObject'
 
     MeetingSearchRequest:
       description: Запрос на поиск встречи

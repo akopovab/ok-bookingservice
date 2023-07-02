@@ -7,11 +7,12 @@ import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.handle
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.on
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.worker
 
-fun CorChainDsl<BsMeetingContext>.repoMeetingPrepareResultRead(title: String) = worker {
+fun CorChainDsl<BsMeetingContext>.repoMeetingPrepareResult(title: String) = worker {
     this.title = title
     on { state == BsState.RUNNING }
     handle {
         meetingResponse = meetingRepoDone
         meetingsResponse = meetingsRepoDone
+        state = BsState.FINISHING
     }
 }

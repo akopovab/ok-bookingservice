@@ -1,4 +1,9 @@
-package ru.otuskotlin.public.bookingservice.repo.inmemory
+package ru.otuskotlin.public.bookingservice.repo.postgresql
 
-class SqlProperties {
-}
+data class SqlProperties(
+    val url: String = "jdbc:postgresql://localhost:5432/bookingservice",
+    val user: String = "postgres",
+    val password: String = "bookingservice",
+    val schema: String = "bookingservice",
+    val dropTable: Boolean = false,
+)

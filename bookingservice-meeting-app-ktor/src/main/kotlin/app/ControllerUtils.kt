@@ -35,6 +35,7 @@ suspend inline fun <reified Q : IMeetingRequest> ApplicationCall.meetingProcess(
                 msg = "$command request is got",
                 data = ctx.toLog("${logId}-got")
             )
+            ctx.settings = appSettings.corSettings
             appSettings.meetingProcessor.exec(ctx)
             logger.info(
                 msg = "$command request is handled",
@@ -71,6 +72,7 @@ suspend inline fun <reified Q : ISlotRequest> ApplicationCall.slotProcess(
                 msg = "$command request is got",
                 data = ctx.toLog("${logId}-got")
             )
+            ctx.settings = appSettings.corSettings
             appSettings.slotProcessor.exec(ctx)
             logger.info(
                 msg = "$command request is handled",
