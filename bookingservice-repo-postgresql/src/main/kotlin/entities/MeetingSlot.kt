@@ -5,7 +5,9 @@ import org.jetbrains.exposed.sql.Table
 
 
 object MeetingSlot : Table("t_meeting_slot") {
-    val id = Slot.varchar("id", 36).uniqueIndex()
+    val id = varchar("id", 36).uniqueIndex()
     val slotId = reference("slot_id", Slot.id, onDelete = ReferenceOption.CASCADE)
     val meetingId = reference("meeting_id", Meeting.id, onDelete = ReferenceOption.CASCADE)
+
+    override val primaryKey = PrimaryKey(id)
 }

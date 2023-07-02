@@ -13,16 +13,18 @@ import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotId
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object Slot : Table("t_slot") {
     val id = varchar("id", 36).uniqueIndex()
-    private val startDate = datetime("start_date")
-    private val endDate = datetime("end_date")
+    private val startDate = varchar("start_date", 36)
+    private val endDate = varchar("end_date", 36)
     private val status = enumeration("status", BsSlotStatus::class)
     private val employeeId = varchar("employee_id", 36)
 
-    override val primaryKey = PrimaryKey(MeetingSlot.id)
+    override val primaryKey = PrimaryKey(id)
 
+    private var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     fun from(res : ResultRow) = BsSlot(
         id = BsSlotId(res[id].toString()),
         startDate = Instant.parse(res[startDate].toString()),
@@ -42,8 +44,8 @@ object Slot : Table("t_slot") {
 
     fun to(it: UpdateBuilder<*>, slot : BsSlot, uuidId: () -> String) {
         it[id] = slot.id.takeIf { it != BsSlotId.NONE }?.asString() ?: uuidId()
-        it[startDate] = LocalDateTime.ofInstant(slot.startDate.toJavaInstant(), ZoneId.systemDefault())
-        it[endDate] = LocalDateTime.ofInstant(slot.endDate.toJavaInstant(), ZoneId.systemDefault())
+        it[startDate] = slot.startDate.toString()
+        it[endDate] = slot.endDate.toString()
         it[status] = slot.slotStatus
         it[employeeId] = slot.employeeId.asString()
     }

@@ -24,6 +24,44 @@ class MeetingRepoSql(
     initObjects: List<BsMeeting> = emptyList(),
     initSlots: Set<BsSlot> = emptySet(),
 ) : IMeetingRepository {
+
+    init {
+        val driver = when {
+            props.url.startsWith("jdbc:postgresql://") -> "org.postgresql.Driver"
+            else -> throw IllegalArgumentException("Unknown driver for url ${props.url}")
+        }
+
+        Database.connect(
+            props.url, driver, props.user, props.password
+        )
+
+        transaction {
+            props.takeIf { it.dropTable }?.let { SchemaUtils.drop(Meeting, Slot, MeetingSlot) }
+            SchemaUtils.create(Meeting, Slot, MeetingSlot)
+
+            if (initSlots.isEmpty()) {
+                SlotStub.getSlots().forEach { slot ->
+                    saveSlot(slot)
+                }
+            }
+
+            initSlots.forEach {
+                saveSlot(it)
+            }
+
+            initObjects.forEach { meeting ->
+                saveMeeting(meeting)
+                meeting.slots.forEach { slot ->
+                    saveSlot(slot)
+                    saveRelation(meeting, slot)
+                }
+            }
+
+
+        }
+    }
+
+
     private fun getUuid() = UUID.randomUUID().toString()
     private fun <T> transactionWrapper(block: () -> T, handle: (Exception) -> T): T =
         try {
@@ -72,38 +110,9 @@ class MeetingRepoSql(
 
     private fun saveRelation(meeting: BsMeeting, slot: BsSlot) {
         MeetingSlot.insert {
+            it[id] = getUuid()
             it[meetingId] = meeting.id.asString()
             it[slotId] = slot.id.asString()
-        }
-    }
-
-    init {
-        val driver = when {
-            props.url.startsWith("jdbc:postgresql://") -> "org.postgresql.Driver"
-            else -> throw IllegalArgumentException("Unknown driver for url ${props.url}")
-        }
-
-        Database.connect(
-            props.url, driver, props.user, props.password
-        )
-
-        transaction {
-            props.takeIf { it.dropTable }?.let { SchemaUtils.drop(Meeting, Slot, MeetingSlot) }
-            SchemaUtils.create(Meeting, Slot, MeetingSlot)
-
-            initObjects.forEach { meeting ->
-                saveMeeting(meeting)
-                meeting.slots.forEach { slot ->
-                    saveSlot(slot)
-                    saveRelation(meeting, slot)
-                }
-            }
-
-            if (initSlots.isEmpty()) {
-                SlotStub.getSlots().forEach { slot ->
-                    saveSlot(slot)
-                }
-            }
         }
     }
 
@@ -143,16 +152,36 @@ class MeetingRepoSql(
     }
 
 
-    override suspend fun deleteMeeting(request: DbMeetingIdRequest): DbMeetingResponse {
-        Meeting.deleteWhere { id eq request.id.asString() }
-        return DbMeetingResponse.success()
-    }
+    override suspend fun deleteMeeting(request: DbMeetingIdRequest) =
+        transactionWrapper {
+            Meeting.deleteWhere { id eq request.id.asString() }
+            DbMeetingResponse.success()
+        }
 
-    override suspend fun searchMeeting(request: DbEmployeeIdRequest): DbMeetingsResponse {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun searchSlots(request: DbEmployeeIdRequest): DbSlotsResponse {
-        TODO("Not yet implemented")
-    }
+    override suspend fun searchMeeting(request: DbEmployeeIdRequest) =
+        transactionWrapper({
+            val meetings = Meeting
+                .select { id eq request.id.asString() }
+                .map { Meeting.from(it) }
+            meetings.forEach {
+                addSlot(it)
+            }
+            DbMeetingsResponse.success(meetings)
+        }) {
+            DbMeetingsResponse.error(it.asBsError())
+        }
+
+
+    override suspend fun searchSlots(request: DbEmployeeIdRequest) =
+        transactionWrapper({
+            val slots = Slot
+                .select { id eq request.id.asString() }.map {
+                    Slot.from(it)
+                }.toMutableSet()
+            DbSlotsResponse.success(slots)
+        }) {
+            DbSlotsResponse.error(it.asBsError())
+        }
+
 }

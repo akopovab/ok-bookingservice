@@ -11,13 +11,14 @@ import java.util.UUID
 
 object Meeting : Table("t_meeting") {
     val id = varchar("id", 36).uniqueIndex()
-    val clientId = varchar("client_id", 36)
-    val employeeId = varchar("employee_id", 36)
-    val status = enumeration("status", BsMeetingStatus::class)
-    val description = varchar("description", 1000)
-    val lock = varchar("status", 36)
+    private val clientId = varchar("client_id", 36)
+    private val employeeId = varchar("employee_id", 36)
+    private val status = enumeration("status", BsMeetingStatus::class)
+    private val description = varchar("description", 1000)
+    private val lock = varchar("lock", 36)
 
-    override val primaryKey = PrimaryKey(MeetingSlot.id)
+    override val primaryKey = PrimaryKey(id)
+
 
     fun from(res : ResultRow) = BsMeeting(
         id = BsMeetingId(res[id].toString()),
