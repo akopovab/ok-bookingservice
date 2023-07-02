@@ -2,7 +2,7 @@ package ru.otuskotlin.public.bookingservice.business
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import ru.otuskotlin.public.bookingservice.business.processors.impl.MeetingProcessor
+import ru.otuskotlin.public.bookingservice.business.processors.MeetingProcessor
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode

@@ -1,4 +1,4 @@
-package workers.repo
+package ru.otuskotlin.public.bookingservice.business.workers.repo
 
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState

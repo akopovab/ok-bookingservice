@@ -1,4 +1,4 @@
-package chains
+package ru.otuskotlin.public.bookingservice.business.chains
 
 import ru.otuskotlin.public.bookingservice.common.context.BsContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState

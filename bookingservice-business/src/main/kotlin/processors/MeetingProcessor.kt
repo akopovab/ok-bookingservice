@@ -1,7 +1,7 @@
-package ru.otuskotlin.public.bookingservice.business.processors.impl
+package ru.otuskotlin.public.bookingservice.business.processors
 
-import chains.repository
 import ru.otuskotlin.public.bookingservice.business.chains.operation
+import ru.otuskotlin.public.bookingservice.business.chains.repository
 import ru.otuskotlin.public.bookingservice.business.chains.stubs
 import ru.otuskotlin.public.bookingservice.business.chains.validation
 import ru.otuskotlin.public.bookingservice.business.workers.initStatus
@@ -11,9 +11,6 @@ import ru.otuskotlin.public.bookingservice.business.workers.validations.*
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingCommand
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.chain
-import workers.repo.repoMeetingDelete
-import workers.repo.repoMeetingSearch
-import workers.repo.repoMeetingUpdate
 
 class MeetingProcessor {
 

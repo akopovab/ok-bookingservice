@@ -7,8 +7,7 @@ import ru.otuskotlin.public.bookingservice.api.models.ISlotRequest
 import ru.otuskotlin.public.bookingservice.api.models.ISlotResponse
 import ru.otuskotlin.public.bookingservice.app.kafka.InputOutputTopics
 import ru.otuskotlin.public.bookingservice.app.kafka.configuration.KafkaConfig
-import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategy
-import ru.otuskotlin.public.bookingservice.business.processors.impl.SlotProcessor
+import ru.otuskotlin.public.bookingservice.business.processors.SlotProcessor
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportSlot
 import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
@@ -30,7 +29,7 @@ class ConsumerStrategySlot : ConsumerStrategy<BsSlotContext> {
         context.fromTransportSlot(request)
     }
 
-    suspend override fun processor(){
+    override suspend fun processor(){
         SlotProcessor().exec(context)
     }
 }
