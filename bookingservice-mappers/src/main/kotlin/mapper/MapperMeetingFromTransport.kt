@@ -66,6 +66,8 @@ private fun IMeetingRequest.requestId() = this.requestId?.let { BsRequestId(it) 
 
 private fun String?.toMeetingId() = this?.let { BsMeetingId(it) } ?: BsMeetingId.NONE
 
+private fun String?.toLockId() = this?.let { BsMeetingLock(it) } ?: BsMeetingLock.NONE
+
 private fun String?.toSlotId() = this?.let { BsSlotId(it) } ?: BsSlotId.NONE
 
 private fun List<SlotIdListSlotsInner>?.fromTransport() = this?.map { BsSlot(id = it.slotId.toSlotId()) }?.toMutableSet() ?: mutableSetOf()
@@ -82,6 +84,12 @@ private fun MeetingReadObject.toInternal(): BsMeeting = BsMeeting(
     id = this.meetingId.toMeetingId()
 )
 
+private fun MeetingDeleteObject.toInternal(): BsMeeting = BsMeeting(
+    id = this.meetingId.toMeetingId(),
+    lock = this.meetingLock.toLockId()
+)
+
+
 private fun MeetingCreateObject.toInternal(): BsMeeting = BsMeeting(
     employeeId = this.employeeId.toEmployeeId(),
     clientId = this.clientId.toClientId(),
@@ -95,7 +103,8 @@ private fun MeetingUpdateObject.toInternal(): BsMeeting = BsMeeting(
     clientId = this.clientId.toClientId(),
     description = this.description ?: "",
     slots = this.slots.fromTransport(),
-    meetingStatus = this.status.transportToStatus()
+    meetingStatus = this.status.transportToStatus(),
+    lock = this.meetingLock.toLockId()
 )
 
 

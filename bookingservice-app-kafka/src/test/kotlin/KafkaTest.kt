@@ -118,7 +118,7 @@ class KafkaTest {
         assertEquals(outputTopic, message.topic())
         assertEquals("12345", result.requestId)
         assertEquals("123000111", result.slots?.get(0)?.slotId)
-        assertEquals("1230002222", result.slots?.get(1)?.slotId)
+        assertEquals("123000222", result.slots?.get(1)?.slotId)
     }
 
     companion object {

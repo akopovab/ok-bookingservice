@@ -61,7 +61,8 @@ fun BsMeeting.toTransportMeeting(): MeetingResponseObject = MeetingResponseObjec
     slots = slots.toTransportSlots(),
     description = description.takeIf { it.isNotBlank() },
     meetingPermissions = meetingPermissions.toTransportPermissions(),
-    status = meetingStatus.toTransportStatus()
+    status = meetingStatus.toTransportStatus(),
+    meetingLock = lock.takeIf { it != BsMeetingLock.NONE}?.asString()
 )
 
 private fun MutableSet<BsMeetingPermissions>.toTransportPermissions() = this.map { it.toTransportPermission() }.toSet()

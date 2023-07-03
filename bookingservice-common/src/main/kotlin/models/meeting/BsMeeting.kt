@@ -13,6 +13,7 @@ data class BsMeeting (
     var slots :MutableSet<BsSlot> = mutableSetOf(),
     var meetingPermissions: MutableSet<BsMeetingPermissions> = mutableSetOf(),
     var timeCreate :Instant = Instant.NONE,
-    var timeModify :Instant = Instant.NONE
+    var timeModify :Instant = Instant.NONE,
+    var lock :BsMeetingLock = BsMeetingLock.NONE
 
 )

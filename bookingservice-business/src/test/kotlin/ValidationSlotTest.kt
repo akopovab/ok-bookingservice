@@ -2,7 +2,7 @@ package ru.otuskotlin.public.bookingservice.business
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import ru.otuskotlin.public.bookingservice.business.processors.impl.SlotProcessor
+import ru.otuskotlin.public.bookingservice.business.processors.SlotProcessor
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsSlotContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode

@@ -8,11 +8,9 @@ import ru.otuskotlin.public.bookingservice.api.models.IMeetingResponse
 import ru.otuskotlin.public.bookingservice.app.kafka.configuration.KafkaConfig
 import ru.otuskotlin.public.bookingservice.app.kafka.InputOutputTopics
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
-import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategy
-import ru.otuskotlin.public.bookingservice.business.processors.impl.MeetingProcessor
+import ru.otuskotlin.public.bookingservice.business.processors.MeetingProcessor
 import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportMeeting
 import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
-import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
 
 class ConsumerStrategyMeeting : ConsumerStrategy<BsMeetingContext> {
 
