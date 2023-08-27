@@ -30,7 +30,7 @@ fun repoCreateTest(repo :IMeetingRepository) = funSpec {
         createResult.data?.clientId shouldBe expected.clientId
         createResult.data?.employeeId shouldBe expected.employeeId
         createResult.data?.description shouldBe expected.description
-        createResult.data?.meetingStatus shouldBe BsMeetingStatus.CREATE
+        createResult.data?.meetingStatus shouldBe BsMeetingStatus.CREATED
         createResult.data?.slots shouldNotBe emptySet<BsSlot>()
         createResult.data?.slots?.forEach { resultSlot ->
             resultSlot.slotStatus shouldBe BsSlotStatus.RESERVED

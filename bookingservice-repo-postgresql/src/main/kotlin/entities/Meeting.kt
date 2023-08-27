@@ -12,7 +12,7 @@ import java.util.UUID
 object Meeting : Table("t_meeting") {
     val id = varchar("id", 36).uniqueIndex()
     private val clientId = varchar("client_id", 36)
-    private val employeeId = varchar("employee_id", 36)
+    val employeeId = varchar("employee_id", 36)
     private val status = enumeration("status", BsMeetingStatus::class)
     private val description = varchar("description", 1000)
     private val lock = varchar("lock", 36)

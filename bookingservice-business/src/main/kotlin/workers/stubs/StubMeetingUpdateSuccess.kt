@@ -22,7 +22,7 @@ fun CorChainDsl<BsMeetingContext>.stubMeetingUpdateSuccess(title: String) = work
             clientId = meetingRequest.clientId
             employeeId = meetingRequest.employeeId
             description = meetingRequest.description
-            meetingStatus = BsMeetingStatus.CREATE
+            meetingStatus = BsMeetingStatus.CREATED
             meetingPermissions = mutableSetOf(BsMeetingPermissions.READ)
             slots = meetingRequest.slots
         }

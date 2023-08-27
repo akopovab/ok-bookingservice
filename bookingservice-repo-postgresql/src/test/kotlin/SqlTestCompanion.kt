@@ -2,7 +2,6 @@ package ru.otuskotlin.public.bookingservice.repo.postgresql
 
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
 import java.time.Duration
-import java.util.*
 import org.testcontainers.containers.PostgreSQLContainer
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 
@@ -29,7 +28,6 @@ object SqlTestCompanion {
     fun repoUnderTestContainer(
         initObjects: List<BsMeeting> = emptyList(),
         initSlots: Set<BsSlot> = emptySet(),
-        idUuid: () -> String = { UUID.randomUUID().toString() },
     ): MeetingRepoSql {
         return MeetingRepoSql(
             SqlProperties(url, USER, PASS, SCHEMA, dropTable = true),

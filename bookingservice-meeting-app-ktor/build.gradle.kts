@@ -85,11 +85,11 @@ tasks {
                 into("${project.buildDir}/docker/app.jar")
             }
         }
-        images.add("${project.name}:${project.version}")
+        images.add("bookingservice-app-ktor:${project.version}")
     }
 
-}
+    test {
+        useJUnitPlatform()
+    }
 
-tasks.test {
-    useJUnitPlatform()
 }

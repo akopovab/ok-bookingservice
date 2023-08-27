@@ -254,7 +254,8 @@ components:
       type: string
       description: Статус встречи
       enum:
-        - CREATE
+        - CREATED
+        - UPDATED
         - TOOK_PLACE
         - MEETING_UNDONE
         - WITHDRAWN

@@ -91,8 +91,9 @@ private fun BsMeetingStatus.toTransportStatus() = when (this) {
     BsMeetingStatus.NONE -> null
     BsMeetingStatus.WITHDRAWN -> MeetingStatus.WITHDRAWN
     BsMeetingStatus.MEETING_UNDONE -> MeetingStatus.MEETING_UNDONE
-    BsMeetingStatus.CREATE -> MeetingStatus.CREATE
+    BsMeetingStatus.CREATED -> MeetingStatus.CREATED
     BsMeetingStatus.TOOK_PLACE -> MeetingStatus.TOOK_PLACE
+    BsMeetingStatus.UPDATED -> MeetingStatus.UPDATED
 }
 
 private fun BsMeetingPermissions.toTransportPermission() = when (this) {

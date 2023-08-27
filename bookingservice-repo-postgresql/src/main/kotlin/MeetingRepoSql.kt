@@ -6,12 +6,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingLock
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingStatus
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.stubs.asBsError
 import ru.otuskotlin.public.bookingservice.common.repo.*
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.EMPTY_ID_ERROR
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.NO_FOUND_ID_ERROR
-import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.NO_FOUND_MEETINGS_BY_EMPLOYEE_ID
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.Meeting
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.Meeting.id
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.MeetingSlot
@@ -50,17 +50,19 @@ class MeetingRepoSql(
             }
 
             initObjects.forEach { meeting ->
-                saveMeeting(meeting)
+                val resMeeting = saveMeeting(meeting)
                 meeting.slots.forEach { slot ->
-                    saveSlot(slot)
-                    saveRelation(meeting, slot)
+                    saveRelation(resMeeting, slot)
+                    Slot.update({
+                        Slot.id eq slot.id.asString()
+                    }) {
+                        reserved(it)
+                    }
+
                 }
             }
-
-
         }
     }
-
 
     private fun getUuid() = UUID.randomUUID().toString()
     private fun <T> transactionWrapper(block: () -> T, handle: (Exception) -> T): T =
@@ -101,7 +103,7 @@ class MeetingRepoSql(
             to(
                 it = builder,
                 meeting = meeting,
-                uuidId = { meeting.id.asString() }
+                uuidId = { meeting.id.takeIf { it != BsMeetingId.NONE }?.asString() ?: getUuid() }
             )
         }
         return Meeting.from(res)
@@ -116,20 +118,10 @@ class MeetingRepoSql(
         }
     }
 
-    override suspend fun createMeeting(request: DbMeetingRequest): DbMeetingResponse =
-        transactionWrapper {
-            request.meeting.slots.forEach {
-                saveRelation(request.meeting, it)
-            }
-            val res = saveMeeting(request.meeting)
-            DbMeetingResponse.success(res)
-        }
-
-
-    override suspend fun readMeeting(request: DbMeetingIdRequest): DbMeetingResponse {
-        val resultMeetingRow = request.id.takeIf { it != BsMeetingId.NONE }?.let {
+    private fun readMeeting(meetingId: BsMeetingId): DbMeetingResponse {
+        val resultMeetingRow = meetingId.takeIf { it != BsMeetingId.NONE }?.let {
             Meeting.select {
-                Meeting.id eq it.asString()
+                id eq it.asString()
             }.singleOrNull() ?: return NO_FOUND_ID_ERROR
         } ?: return EMPTY_ID_ERROR
         val meeting = Meeting.from(resultMeetingRow).apply {
@@ -138,18 +130,52 @@ class MeetingRepoSql(
         return DbMeetingResponse.success(meeting)
     }
 
-    override suspend fun updateMeeting(request: DbMeetingRequest): DbMeetingResponse {
-        Meeting.update({ Meeting.id eq request.meeting.id.asString() }) {
-            to(
-                it, request.meeting.copy(lock = BsMeetingLock(UUID.randomUUID().toString())), ::getUuid
-            )
+    override suspend fun createMeeting(request: DbMeetingRequest): DbMeetingResponse =
+        transactionWrapper {
+            val result = saveMeeting(request.meeting.apply {
+                meetingStatus = BsMeetingStatus.CREATED
+                lock = BsMeetingLock(getUuid())
+            })
+            request.meeting.slots.forEach { slot ->
+                saveRelation(result, slot)
+                Slot.update({
+                    Slot.id eq slot.id.asString()
+                }) {
+                    reserved(it)
+                }
+            }
+            addSlot(result)
+            DbMeetingResponse.success(result)
         }
-        MeetingSlot.deleteWhere { meetingId eq request.meeting.id.asString() }
-        request.meeting.slots.forEach {
-            saveRelation(request.meeting, it)
+
+
+    override suspend fun readMeeting(request: DbMeetingIdRequest) =
+        transactionWrapper { readMeeting(request.id) }
+
+    override suspend fun updateMeeting(request: DbMeetingRequest) =
+        transactionWrapper {
+            val newStatus = when (val current = readMeeting(request.meeting.id).data?.meetingStatus) {
+                BsMeetingStatus.NONE, BsMeetingStatus.CREATED, null -> BsMeetingStatus.UPDATED
+                else -> current
+            }
+            Meeting.update({ id eq request.meeting.id.asString() }) {
+                to(
+                    it,
+                    request.meeting.copy(lock = BsMeetingLock(UUID.randomUUID().toString()), meetingStatus = newStatus),
+                    ::getUuid
+                )
+            }
+            MeetingSlot.deleteWhere { meetingId eq request.meeting.id.asString() }
+            request.meeting.slots.forEach {
+                saveRelation(request.meeting, it)
+                Slot.update({
+                    Slot.id eq it.id.asString()
+                }) { statement ->
+                    reserved(statement)
+                }
+            }
+            readMeeting(request.meeting.id)
         }
-        return readMeeting(DbMeetingIdRequest(request.meeting))
-    }
 
 
     override suspend fun deleteMeeting(request: DbMeetingIdRequest) =
@@ -162,7 +188,7 @@ class MeetingRepoSql(
     override suspend fun searchMeeting(request: DbEmployeeIdRequest) =
         transactionWrapper({
             val meetings = Meeting
-                .select { id eq request.id.asString() }
+                .select { Meeting.employeeId eq request.id.asString() }
                 .map { Meeting.from(it) }
             meetings.forEach {
                 addSlot(it)
@@ -172,11 +198,10 @@ class MeetingRepoSql(
             DbMeetingsResponse.error(it.asBsError())
         }
 
-
     override suspend fun searchSlots(request: DbEmployeeIdRequest) =
         transactionWrapper({
             val slots = Slot
-                .select { id eq request.id.asString() }.map {
+                .select { Slot.employeeId eq request.id.asString() }.map {
                     Slot.from(it)
                 }.toMutableSet()
             DbSlotsResponse.success(slots)

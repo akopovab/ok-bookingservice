@@ -83,7 +83,7 @@ class MeetingRepoInMemory(
         val newMeeting = request.meeting.copy(
             id = BsMeetingId(key),
             lock = BsMeetingLock(getUUID()),
-            meetingStatus = BsMeetingStatus.CREATE,
+            meetingStatus = BsMeetingStatus.CREATED,
             meetingPermissions = mutableSetOf(BsMeetingPermissions.READ),
             slots = resultSlot
         ).apply {
@@ -123,7 +123,7 @@ class MeetingRepoInMemory(
         val result = request.meeting.copy(
             slots = resultSlot,
             lock = BsMeetingLock(getUUID()),
-            meetingStatus = BsMeetingStatus.CREATE,
+            meetingStatus = BsMeetingStatus.UPDATED,
             meetingPermissions = mutableSetOf(BsMeetingPermissions.READ),
         ).apply { save(this) }
         return DbMeetingResponse.success(result)

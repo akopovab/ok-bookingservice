@@ -31,7 +31,7 @@ fun repoReadTest(repo : IMeetingRepository) = funSpec {
         result.data?.clientId shouldBe expected.clientId
         result.data?.employeeId shouldBe expected.employeeId
         result.data?.description shouldBe expected.description
-        result.data?.meetingStatus shouldBe BsMeetingStatus.CREATE
+        result.data?.meetingStatus shouldBe BsMeetingStatus.CREATED
         result.data?.slots shouldNotBe emptySet<BsSlot>()
         result.data?.slots?.forEach { resultSlot ->
             resultSlot.slotStatus shouldBe BsSlotStatus.RESERVED
