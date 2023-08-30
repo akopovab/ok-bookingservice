@@ -1,9 +1,9 @@
 package ru.otuskotlin.public.bookingservice.business.processors
 
-import ru.otuskotlin.public.bookingservice.business.chains.operation
-import ru.otuskotlin.public.bookingservice.business.chains.repository
-import ru.otuskotlin.public.bookingservice.business.chains.stubs
-import ru.otuskotlin.public.bookingservice.business.chains.validation
+import ru.otuskotlin.public.bookingservice.business.chains.*
+import ru.otuskotlin.public.bookingservice.business.workers.access.calcAccessPrincipal
+import ru.otuskotlin.public.bookingservice.business.workers.access.calcPermitted
+import ru.otuskotlin.public.bookingservice.business.workers.access.validatePermission
 import ru.otuskotlin.public.bookingservice.business.workers.initStatus
 import ru.otuskotlin.public.bookingservice.business.workers.repo.*
 import ru.otuskotlin.public.bookingservice.business.workers.stubs.*
@@ -36,6 +36,11 @@ class MeetingProcessor {
                     validationMeetingEmployeeId("Проверка наличия id сотрудника")
                     validationMeetingDescription("Проверка примечания к встрече")
                     validationMeetingSlot("Проверка слотов")
+                }
+                accessValidation("Проверка прав доступа") {
+                   calcAccessPrincipal("Вычисление отношения к principal")
+                   calcPermitted("Вычисление прав доступа")
+                   validatePermission("Проверка прав доступа")
                 }
                 repository("Логика создания встречи"){
                     repoMeetingPrepareCreate("Подготовка создания встречи")
@@ -77,6 +82,11 @@ class MeetingProcessor {
                     validationMeetingDescription("Проверка примечания к встрече")
                     validationMeetingSlot("Проверка слотов")
                 }
+                accessValidation("Проверка прав доступа") {
+                    calcAccessPrincipal("Вычисление отношения к principal")
+                    calcPermitted("Вычисление прав доступа")
+                    validatePermission("Проверка прав доступа")
+                }
                 repository("Логика чтения встречи"){
                     repoMeetingUpdate("Логика обновления")
                     repoMeetingPrepareResult("Подготовка ответа")
@@ -92,6 +102,11 @@ class MeetingProcessor {
                     prepareMeetingValidation("Подготовка данных для валидации встречи")
                     validationMeetingId("Проверка наличия id встречи")
                 }
+                accessValidation("Проверка прав доступа") {
+                    calcAccessPrincipal("Вычисление отношения к principal")
+                    calcPermitted("Вычисление прав доступа")
+                    validatePermission("Проверка прав доступа")
+                }
                 repository("Логика чтения встречи"){
                     repoMeetingDelete("Логика удаления")
                     repoMeetingPrepareResult("Подготовка ответа")
@@ -106,6 +121,11 @@ class MeetingProcessor {
                 validation("Валидация запроса на поиск встречи"){
                     prepareMeetingValidation("Подготовка данных для валидации встречи")
                     validationEmployeeId("Проверка наличия id сотрудника")
+                }
+                accessValidation("Проверка прав доступа") {
+                    calcAccessPrincipal("Вычисление отношения к principal")
+                    calcPermitted("Вычисление прав доступа")
+                    validatePermission("Проверка прав доступа")
                 }
                 repository("Логика поиска встречи"){
                     repoMeetingSearch("Поиск встречи")

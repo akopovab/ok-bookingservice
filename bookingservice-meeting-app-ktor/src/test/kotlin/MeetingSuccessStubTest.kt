@@ -45,6 +45,7 @@ class MeetingSuccessStubTest : FunSpec({
 
             val response = client.post("/api/meeting/create") {
                 contentType(ContentType.Application.Json)
+                addAuth(id = "123")
                 setBody(createRequest)
             }
             val meetingUpdateRequest = response.body<MeetingCreateResponse>()
@@ -86,6 +87,7 @@ class MeetingSuccessStubTest : FunSpec({
             )
             val response = client.post("/api/meeting/update") {
                 contentType(ContentType.Application.Json)
+                addAuth(id = "123")
                 setBody(updateRequest)
             }
             val meetingUpdateResponse = response.body<MeetingUpdateResponse>()
@@ -123,6 +125,7 @@ class MeetingSuccessStubTest : FunSpec({
             )
             val response = client.post("/api/meeting/read") {
                 contentType(ContentType.Application.Json)
+                addAuth(id = "123")
                 setBody(readRequest)
             }
 
@@ -159,6 +162,7 @@ class MeetingSuccessStubTest : FunSpec({
             )
             val response = client.post("/api/meeting/delete") {
                 contentType(ContentType.Application.Json)
+                addAuth(id = "123")
                 setBody(deleteRequest)
             }
 
@@ -187,6 +191,7 @@ class MeetingSuccessStubTest : FunSpec({
             )
             val response = client.post("/api/meeting/search") {
                 contentType(ContentType.Application.Json)
+                addAuth(id = "123")
                 setBody(searchRequest)
             }
             val meetingSearchResponse = response.body<MeetingSearchResponse>()

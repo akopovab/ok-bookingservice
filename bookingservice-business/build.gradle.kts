@@ -19,6 +19,7 @@ dependencies {
 //    implementation(project(":bookingservice-api"))
 //    implementation(project(":bookingservice-mappers"))
     implementation(project(":bookingservice-stubs"))
+    implementation(project(":bookingservice-auth"))
 //    implementation(project(":bookingservice-lib-logback"))
 //    implementation(project(":bookingservice-lib-log-common"))
 //    implementation(project(":bookingservice-mappers-log"))

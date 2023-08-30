@@ -11,7 +11,21 @@ ktor:
   urls:
     - "http://127.0.0.1:8080/"
     - "http://0.0.0.0:8080/"
+
 bookingservice:
   repository:
-    test: "mem"
-    prod: "psql"
+    test: mem
+    prod: psql
+    psql:
+      password: bookingservice
+      schema: bookingservice
+      url: "jdbc:postgresql://localhost:5432/bookingservice"
+      user: postgres
+
+jwt:
+  #secret: "bs_secret_code_1075_1"
+  issuer: "http://localhost:8081/auth/realms/booking-service"
+  audience: "bookingservice-users"
+  realm: "booking-service"
+  clientId: "bookingservice-client"
+  certUrl: "http://keycloak:8081/auth/realms/booking-service/protocol/openid-connect/certs"

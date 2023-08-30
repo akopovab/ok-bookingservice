@@ -1,6 +1,8 @@
 package ru.otuskotlin.public.bookingservice.meeting.app
 
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.datetime.Clock
@@ -16,6 +18,7 @@ import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportMeeting
 import ru.otuskotlin.public.bookingservice.mappers.mapper.fromTransportSlot
 import ru.otuskotlin.public.bookingservice.mappers.mapper.toTransportMeeting
 import ru.otuskotlin.public.bookingservice.meeting.BsAppSettings
+import ru.otuskotlin.public.bookingservice.meeting.app.conf.toModel
 
 
 suspend inline fun <reified Q : IMeetingRequest> ApplicationCall.meetingProcess(
@@ -29,6 +32,7 @@ suspend inline fun <reified Q : IMeetingRequest> ApplicationCall.meetingProcess(
     )
     try {
         logger.doWithLogging(id = logId) {
+            ctx.principal = principal<JWTPrincipal>().toModel()
             val request = receive<Q>()
             ctx.fromTransportMeeting(request)
             logger.info(

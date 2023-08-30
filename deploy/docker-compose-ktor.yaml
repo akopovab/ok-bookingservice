@@ -1,7 +1,40 @@
 version: "3.3"
 services:
   meeting:
-    image: bookingservice-app-ktor:0.0.1
+    image: bookingservice-meeting-app-ktor:0.0.1
     ports:
-      - "8080:80"
+      - "8080:8080"
+    expose:
+      - "8080"
+    depends_on:
+      - psql
+      - keycloak
 
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8081:8080"
+      - "8082:9990"
+    volumes:
+      - ./keycloak:/tmp
+    environment:
+      KEYCLOAK_USER: bookingservive
+      KEYCLOAK_PASSWORD: bookingservive
+      #KEYCLOAK_IMPORT: "/tmp/realm-export.json"
+
+  psql:
+    image: postgres
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_PASSWORD: bookingservice
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bookingservice
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

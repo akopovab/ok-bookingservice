@@ -42,6 +42,8 @@ dependencies {
     implementation(ktor("default-headers"))
     implementation(ktor("config-yaml"))
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
+    implementation(ktor("auth"))
+    implementation(ktor("auth-jwt"))
 
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -69,27 +71,37 @@ dependencies {
     testImplementation(ktor("content-negotiation", prefix = "client-"))
 }
 
-tasks {
-    val dockerJvmDockerfile by creating(Dockerfile::class) {
-        group = "docker"
-        from("openjdk:17")
-        copyFile("app.jar", "app.jar")
-        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "/app.jar")
-    }
-    create("dockerBuildJvmImage", DockerBuildImage::class) {
-        group = "docker"
-        dependsOn(dockerJvmDockerfile)
-        doFirst {
-            copy {
-                from(dockerJvmDockerfile)
-                into("${project.buildDir}/docker/app.jar")
-            }
-        }
-        images.add("bookingservice-app-ktor:${project.version}")
-    }
+//tasks {
+//    val dockerJvmDockerfile by creating(Dockerfile::class) {
+//        group = "docker"
+//        from("openjdk:17")
+//        copyFile("app.jar", "app.jar")
+//        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "/app.jar")
+//    }
+//    create("dockerBuildJvmImage", DockerBuildImage::class) {
+//        group = "docker"
+//        dependsOn(dockerJvmDockerfile)
+//        doFirst {
+//            copy {
+//                from(dockerJvmDockerfile)
+//                into("${project.buildDir}/docker/app.jar")
+//            }
+//        }
+//        images.add("bookingservice-app-ktor:${project.version}")
+//    }
+//
+//    test {
+//        useJUnitPlatform()
+//    }
+//
+//}
 
-    test {
-        useJUnitPlatform()
-    }
 
+docker {
+    javaApplication {
+        baseImage.set("openjdk:17")
+        images.add("${project.name}:${project.version}")
+        jvmArgs.set(listOf("-Xms256m", "-Xmx512m"))
+    }
 }
+
