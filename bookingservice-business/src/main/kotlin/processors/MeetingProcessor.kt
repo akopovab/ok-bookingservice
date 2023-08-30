@@ -3,6 +3,7 @@ package ru.otuskotlin.public.bookingservice.business.processors
 import ru.otuskotlin.public.bookingservice.business.chains.*
 import ru.otuskotlin.public.bookingservice.business.workers.access.calcAccessPrincipal
 import ru.otuskotlin.public.bookingservice.business.workers.access.calcPermitted
+import ru.otuskotlin.public.bookingservice.business.workers.access.resolvePermission
 import ru.otuskotlin.public.bookingservice.business.workers.access.validatePermission
 import ru.otuskotlin.public.bookingservice.business.workers.initStatus
 import ru.otuskotlin.public.bookingservice.business.workers.repo.*
@@ -38,6 +39,7 @@ class MeetingProcessor {
                     validationMeetingSlot("Проверка слотов")
                 }
                 accessValidation("Проверка прав доступа") {
+                   resolvePermission("Вычисление прав")
                    calcAccessPrincipal("Вычисление отношения к principal")
                    calcPermitted("Вычисление прав доступа")
                    validatePermission("Проверка прав доступа")
@@ -83,6 +85,7 @@ class MeetingProcessor {
                     validationMeetingSlot("Проверка слотов")
                 }
                 accessValidation("Проверка прав доступа") {
+                    resolvePermission("Вычисление прав")
                     calcAccessPrincipal("Вычисление отношения к principal")
                     calcPermitted("Вычисление прав доступа")
                     validatePermission("Проверка прав доступа")
@@ -103,6 +106,7 @@ class MeetingProcessor {
                     validationMeetingId("Проверка наличия id встречи")
                 }
                 accessValidation("Проверка прав доступа") {
+                    resolvePermission("Вычисление прав")
                     calcAccessPrincipal("Вычисление отношения к principal")
                     calcPermitted("Вычисление прав доступа")
                     validatePermission("Проверка прав доступа")
@@ -123,6 +127,7 @@ class MeetingProcessor {
                     validationEmployeeId("Проверка наличия id сотрудника")
                 }
                 accessValidation("Проверка прав доступа") {
+                    resolvePermission("Вычисление прав")
                     calcAccessPrincipal("Вычисление отношения к principal")
                     calcPermitted("Вычисление прав доступа")
                     validatePermission("Проверка прав доступа")
