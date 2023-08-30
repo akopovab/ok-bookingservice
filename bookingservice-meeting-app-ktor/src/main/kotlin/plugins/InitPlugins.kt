@@ -81,10 +81,6 @@ fun Application.initPlugins(appSettings: BsAppSettings, authConfig: BsAuthConfig
             }
             validate { jwtCredential: JWTCredential ->
                 when {
-                    jwtCredential.payload.getClaim(F_NAME_CLAIM).asString().isNullOrBlank() -> {
-                        loggerSecurity.error("Name claim must not be empty in JWT token")
-                        null
-                    }
                     jwtCredential.payload.getClaim(GROUPS_CLAIM).asList(String::class.java).isNullOrEmpty() -> {
                         loggerSecurity.error("Groups claim must not be empty in JWT token")
                         null

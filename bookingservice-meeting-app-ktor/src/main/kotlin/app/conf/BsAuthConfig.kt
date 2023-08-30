@@ -20,7 +20,7 @@ data class BsAuthConfig(
     )
 
     companion object {
-        const val ID_CLAIM = "id"
+        const val ID_CLAIM = "sub"
         const val GROUPS_CLAIM = "groups"
         const val F_NAME_CLAIM = "first_name"
         const val L_NAME_CLAIM = "last_name"

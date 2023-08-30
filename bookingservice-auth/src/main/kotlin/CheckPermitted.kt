@@ -35,6 +35,11 @@ private val accessTable = mapOf(
         relation = BsPrincipalRelations.NEW
     ) to true,
     AccessTableConditions(
+        command = BsMeetingCommand.CREATE,
+        permission = BsUserPermission.CREATE,
+        relation = BsPrincipalRelations.OWN_CLIENT
+    ) to true,
+    AccessTableConditions(
         command = BsMeetingCommand.UPDATE,
         permission = BsUserPermission.UPDATE,
         relation = BsPrincipalRelations.OWN_CLIENT
