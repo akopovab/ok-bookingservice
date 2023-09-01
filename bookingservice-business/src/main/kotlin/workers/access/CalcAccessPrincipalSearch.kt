@@ -8,14 +8,23 @@ import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.handle
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.on
 import ru.otuskotlin.public.bookingservice.lib.cor.dsl.handlers.worker
 
-fun <T : BsMeetingContext> CorChainDsl<T>.calcAccessPrincipal(title: String) = worker {
+
+fun <T : BsMeetingContext> CorChainDsl<T>.calcAccessPrincipalSearch(title: String) = worker {
     this.title = title
     handle {
-        meetingRepoPrepare.principalRelation = meetingRepoPrepare.resolveRelationTo(principal)
-        println("principalRelation ctx ${this.requestId}")
+        meetingRepoPrepare.principalRelation = meetingRepoPrepareSearch.resolveRelationTo(principal)
+        println("-------------------->>>")
+        println("principalRelation ctx: ${this.requestId}")
         println(meetingRepoPrepare.principalRelation)
+        println("<<<--------------------")
+        println("-------------------->>>")
         println("principal ctx ${this.requestId}")
         println(principal)
+        println("<<<--------------------")
+        println("-------------------->>>")
+        println("meetingRepoPrepareSearch ${this.requestId}")
+        println(meetingRepoPrepareSearch)
+        println("<<<--------------------")
     }
     on { state == BsState.RUNNING }
 

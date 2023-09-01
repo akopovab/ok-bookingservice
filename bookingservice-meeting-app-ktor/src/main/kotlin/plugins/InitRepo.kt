@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import ru.otuskotlin.public.bookingservice.common.models.BsWorkMode
 import ru.otuskotlin.public.bookingservice.common.repo.IMeetingRepository
 import ru.otuskotlin.public.bookingservice.repo.inmemory.MeetingRepoInMemory
+import ru.otuskotlin.public.bookingservice.repo.postgresql.MeetingRepoSql
 
 object ConfigPaths {
     private const val BsRoot = "bookingservice"
@@ -16,7 +17,7 @@ fun Application.getRepository() =
             when (environment.config.propertyOrNull(ConfigPaths.repository + "." + mode.name.lowercase())?.getString()
                 !!.lowercase()) {
                 "in-memory", "inmemory", "memory", "mem" -> MeetingRepoInMemory()
-                "postgres", "postgresql", "pg", "sql", "psql" -> IMeetingRepository.NONE
+                "postgres", "postgresql", "pg", "sql", "psql" -> MeetingRepoSql()
                 else -> throw IllegalArgumentException(
                     "$ConfigPaths must be set in application.yml to one of: 'in-memory', 'psql'"
                 )

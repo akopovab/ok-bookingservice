@@ -73,5 +73,15 @@ private val accessTable = mapOf(
         command = BsMeetingCommand.DELETE,
         permission = BsUserPermission.DELETE,
         relation = BsPrincipalRelations.MODERATABLE
+    ) to true,
+    AccessTableConditions(
+        command = BsMeetingCommand.SEARCH,
+        permission = BsUserPermission.READ,
+        relation = BsPrincipalRelations.MODERATABLE
+    ) to true,
+    AccessTableConditions(
+        command = BsMeetingCommand.SEARCH,
+        permission = BsUserPermission.READ,
+        relation = BsPrincipalRelations.OWN_EMPLOYEE
     ) to true
 )

@@ -42,6 +42,7 @@ data class BsMeetingContext  (
 
     var meetingRepoRead :BsMeeting = BsMeeting(),
     var meetingRepoPrepare :BsMeeting = BsMeeting(),
+    var meetingRepoPrepareSearch :BsEmployeeId = BsEmployeeId.NONE,
     var meetingRepoDone :BsMeeting = BsMeeting(),
     var meetingsRepoDone :MutableList<BsMeeting> = mutableListOf(),
 

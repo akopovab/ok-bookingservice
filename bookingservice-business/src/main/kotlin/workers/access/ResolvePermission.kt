@@ -12,6 +12,8 @@ fun <T : BsMeetingContext> CorChainDsl<T>.resolvePermission(title: String) = wor
     this.title = title
     handle {
         permissions.addAll(resolvePermissions(principal.groups))
+        println("permissions ctx ${this.requestId}")
+        println(permissions)
     }
     on { state == BsState.RUNNING }
 

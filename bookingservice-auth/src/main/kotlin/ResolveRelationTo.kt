@@ -1,5 +1,6 @@
 package ru.otuskotlin.public.bookingservice.auth
 
+import ru.otuskotlin.public.bookingservice.common.models.meeting.BsEmployeeId
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
 import ru.otuskotlin.public.bookingservice.common.models.permission.BsPrincipal
 import ru.otuskotlin.public.bookingservice.common.models.permission.BsPrincipalRelations
@@ -11,3 +12,10 @@ setOfNotNull(
     BsPrincipalRelations.OWN_EMPLOYEE.takeIf { principal.id == this.employeeId.asString()},
     BsPrincipalRelations.OWN_CLIENT.takeIf { principal.id == this.clientId.asString()},
 )
+
+
+fun BsEmployeeId.resolveRelationTo(principal: BsPrincipal): Set<BsPrincipalRelations> =
+    setOfNotNull(
+        BsPrincipalRelations.NONE,
+        BsPrincipalRelations.OWN_EMPLOYEE.takeIf { principal.id == this.asString()},
+    )

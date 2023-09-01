@@ -1,17 +1,19 @@
 package ru.otuskotlin.public.bookingservice.repo.postgresql
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeeting
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingId
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingLock
-import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingStatus
+import ru.otuskotlin.public.bookingservice.common.models.meeting.*
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
+import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
 import ru.otuskotlin.public.bookingservice.common.models.stubs.asBsError
 import ru.otuskotlin.public.bookingservice.common.repo.*
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.EMPTY_ID_ERROR
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.NO_FOUND_ID_ERROR
+import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.SLOT_OF_ANOTHER_EMPLOYEE
+import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.SLOT_RESERVED_ERROR
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.Meeting
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.Meeting.id
 import ru.otuskotlin.public.bookingservice.repo.postgresql.entities.MeetingSlot
@@ -130,8 +132,22 @@ class MeetingRepoSql(
         return DbMeetingResponse.success(meeting)
     }
 
+    private suspend fun reserveSlotValidation(request: DbMeetingRequest): DbMeetingResponse? {
+        val repoSlots = searchSlots(DbEmployeeIdRequest(request.meeting.employeeId))
+        if (!request.meeting.slots.all { req -> repoSlots.data.any { repo -> req.id == repo.id } }) {
+            return SLOT_OF_ANOTHER_EMPLOYEE
+        }
+        if (!request.meeting.slots.all { req -> repoSlots.data.any { repo -> req.id == repo.id && repo.slotStatus == BsSlotStatus.FREE } }) {
+            return SLOT_RESERVED_ERROR
+        }
+        return null
+    }
+
     override suspend fun createMeeting(request: DbMeetingRequest): DbMeetingResponse =
-        transactionWrapper {
+        runBlocking {
+            reserveSlotValidation(request)
+        }?: transactionWrapper {
+            request.meeting.employeeId
             val result = saveMeeting(request.meeting.apply {
                 meetingStatus = BsMeetingStatus.CREATED
                 lock = BsMeetingLock(getUuid())
