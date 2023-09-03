@@ -30,6 +30,8 @@ dependencies {
     val atomicfuVersion: String by project
     val logbackVersion: String by project
     val kotlinLoggingJvmVersion: String by project
+    val kotestVersion: String by project
+
 
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
@@ -46,6 +48,8 @@ dependencies {
     implementation(project(":bookingservice-stubs"))
     implementation(project(":bookingservice-business"))
     // test
-    testImplementation(kotlin("test-junit"))
+    //testImplementation(kotlin("test-junit"))
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 }
 

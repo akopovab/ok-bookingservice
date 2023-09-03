@@ -10,6 +10,7 @@ import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
 import ru.otuskotlin.public.bookingservice.common.models.stubs.asBsError
 import ru.otuskotlin.public.bookingservice.common.repo.*
+import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.CONCURRENT_MODIFICATION
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.EMPTY_ID_ERROR
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.NO_FOUND_ID_ERROR
 import ru.otuskotlin.public.bookingservice.common.repo.DbRepoErrors.SLOT_OF_ANOTHER_EMPLOYEE
@@ -195,7 +196,13 @@ class MeetingRepoSql(
 
 
     override suspend fun deleteMeeting(request: DbMeetingIdRequest) =
-        transactionWrapper {
+    runBlocking {
+        val currentMeeting = readMeeting(DbMeetingIdRequest(request.id))
+        if (currentMeeting.data?.lock != request.lock) {
+            return@runBlocking CONCURRENT_MODIFICATION
+        } else return@runBlocking null
+      }
+        ?: transactionWrapper {
             Meeting.deleteWhere { id eq request.id.asString() }
             DbMeetingResponse.success()
         }

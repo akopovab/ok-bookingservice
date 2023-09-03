@@ -16,6 +16,7 @@ fun CorChainDsl<BsMeetingContext>.repoMeetingRead(title: String) = worker {
         val result = meetingRepo.readMeeting(DbMeetingIdRequest(meetingRequest))
         if (result.isSuccess && result.data != null) {
             meetingRepoDone = result.data!!
+            meetingRepoPrepare = meetingRepoDone
         } else if (result.errors.isNotEmpty()) {
             addError(result.errors)
             state = BsState.FAILING

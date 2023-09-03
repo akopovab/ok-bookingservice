@@ -59,6 +59,12 @@ class MeetingProcessor {
                 }
                 repository("Логика чтения встречи"){
                     repoMeetingRead("Чтение встречи")
+                    accessValidation("Проверка прав доступа") {
+                        resolvePermission("Вычисление прав")
+                        calcAccessPrincipal("Вычисление отношения к principal")
+                        calcPermitted("Вычисление прав доступа")
+                        validatePermission("Проверка прав доступа")
+                    }
                     repoMeetingPrepareResult("Подготовка ответа")
                 }
             }

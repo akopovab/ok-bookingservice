@@ -1,12 +1,14 @@
 package ru.otuskotlin.public.bookingservice.app.kafka
 
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
 import org.apache.kafka.clients.producer.MockProducer
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringSerializer
-import org.junit.Test
+//import org.junit.Test
 import ru.otuskotlin.public.bookingservice.api.apiMeetingRequestSerialize
 import ru.otuskotlin.public.bookingservice.api.apiMeetingResponseDeserialize
 import ru.otuskotlin.public.bookingservice.api.apiSlotRequestSerialize
@@ -16,11 +18,13 @@ import ru.otuskotlin.public.bookingservice.app.kafka.configuration.KafkaConfig
 import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategyMeeting
 import ru.otuskotlin.public.bookingservice.app.kafka.strategies.consumer.ConsumerStrategySlot
 import java.util.*
-import kotlin.test.assertEquals
+//import kotlin.test.assertEquals
 
-class KafkaTest {
-    @Test
-    fun runMeetingKafka() {
+class KafkaTest : FunSpec({
+
+    val PARTITION = 0
+
+    test("runMeetingKafka") {
         val consumer = MockConsumer<String, String>(OffsetResetStrategy.EARLIEST)
         val producer = MockProducer<String, String>(true, StringSerializer(), StringSerializer())
         val config = KafkaConfig()
@@ -66,15 +70,15 @@ class KafkaTest {
 
         val message = producer.history().first()
         val result = apiMeetingResponseDeserialize<MeetingCreateResponse>(message.value())
-        assertEquals(outputTopic, message.topic())
-        assertEquals("1234", result.requestId)
-        assertEquals("1230984567", result.meeting?.clientId)
-        assertEquals("0987654321", result.meeting?.employeeId)
-        assertEquals("Запись на стрижку", result.meeting?.description)
+
+        outputTopic shouldBe message.topic()
+        "1234" shouldBe result.requestId
+        "1230984567" shouldBe result.meeting?.clientId
+        "0987654321" shouldBe result.meeting?.employeeId
+        "Запись на стрижку" shouldBe result.meeting?.description
     }
 
-    @Test
-    fun runSlotKafka() {
+    test("runSlotKafka") {
         val consumer = MockConsumer<String, String>(OffsetResetStrategy.EARLIEST)
         val producer = MockProducer<String, String>(true, StringSerializer(), StringSerializer())
         val config = KafkaConfig()
@@ -115,14 +119,10 @@ class KafkaTest {
 
         val message = producer.history().first()
         val result = apiSlotResponseDeserialize<SlotSearchResponse>(message.value())
-        assertEquals(outputTopic, message.topic())
-        assertEquals("12345", result.requestId)
-        assertEquals("123000111", result.slots?.get(0)?.slotId)
-        assertEquals("123000222", result.slots?.get(1)?.slotId)
+        outputTopic shouldBe message.topic()
+        "12345" shouldBe result.requestId
+        "123000111" shouldBe result.slots?.get(0)?.slotId
+        "123000222" shouldBe result.slots?.get(1)?.slotId
     }
 
-    companion object {
-        const val PARTITION = 0
-    }
-
-}
+})
