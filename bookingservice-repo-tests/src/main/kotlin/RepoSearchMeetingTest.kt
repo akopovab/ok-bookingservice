@@ -17,7 +17,7 @@ import ru.otuskotlin.public.bookingservice.stubs.MeetingStub
 @OptIn(ExperimentalCoroutinesApi::class)
 fun repoSearchMeetingTest(repo : IMeetingRepository) = funSpec {
     repoTest("Search meeting."){
-        val employeeId = BsEmployeeId("1111111111111")
+        val employeeId = BsEmployeeId("444")
         var expected = BsMeeting()
         val result = repo.searchMeeting((DbEmployeeIdRequest(employeeId)))
 
@@ -25,13 +25,14 @@ fun repoSearchMeetingTest(repo : IMeetingRepository) = funSpec {
             if (it.employeeId == employeeId) expected = it
         }
 
+
         result.isSuccess shouldBe true
         result.errors shouldBe emptyList()
         result.data[0].id shouldNotBe BsMeetingId.NONE
         result.data[0].clientId shouldBe expected.clientId
         result.data[0].employeeId shouldBe expected.employeeId
         result.data[0].description shouldBe expected.description
-        result.data[0].meetingStatus shouldBe BsMeetingStatus.CREATE
+        result.data[0].meetingStatus shouldBe BsMeetingStatus.CREATED
         result.data[0].slots shouldNotBe emptySet<BsSlot>()
         result.data[0].slots.forEach { resultSlot ->
             resultSlot.slotStatus shouldBe BsSlotStatus.RESERVED

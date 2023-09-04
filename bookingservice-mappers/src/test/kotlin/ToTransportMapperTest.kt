@@ -25,7 +25,7 @@ class ToTransportMapperTest {
                 id = BsMeetingId("111"),
                 employeeId = BsEmployeeId("321"),
                 clientId = BsClientId("456"),
-                meetingStatus = BsMeetingStatus.CREATE,
+                meetingStatus = BsMeetingStatus.CREATED,
                 description = "Запись на  мастеркласс",
                 meetingPermissions = mutableSetOf(BsMeetingPermissions.READ),
                 slots = mutableSetOf(
@@ -45,7 +45,7 @@ class ToTransportMapperTest {
         assertEquals(resp.meeting?.meetingId, "111")
         assertEquals(resp.meeting?.employeeId, "321")
         assertEquals(resp.meeting?.clientId, "456")
-        assertEquals(resp.meeting?.status, MeetingStatus.CREATE)
+        assertEquals(resp.meeting?.status, MeetingStatus.CREATED)
         assertEquals(resp.meeting?.description, "Запись на  мастеркласс")
         assertEquals(resp.meeting?.meetingPermissions?.firstOrNull(), MeetingPermissions.READ)
         assertEquals(resp.meeting?.slots?.firstOrNull()?.slotId, "slotId123")

@@ -17,8 +17,8 @@
     <appender name="fluentd" class="ch.qos.logback.more.appenders.DataFluentAppender">
         <tag>app.logs</tag>
         <label>normal</label>
-        <remoteHost>127.0.0.1</remoteHost>
-        <port>24224</port>
+        <remoteHost>${LOGS_FB_HOSTS}</remoteHost>
+        <port>${LOGS_FB_PORT}</port>
         <maxQueueSize>20</maxQueueSize>
 
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">

@@ -74,9 +74,10 @@ private fun List<SlotIdListSlotsInner>?.fromTransport() = this?.map { BsSlot(id 
 
 private fun MeetingStatus?.transportToStatus() = when (this) {
     MeetingStatus.MEETING_UNDONE -> BsMeetingStatus.MEETING_UNDONE
-    MeetingStatus.CREATE -> BsMeetingStatus.CREATE
+    MeetingStatus.CREATED -> BsMeetingStatus.CREATED
     MeetingStatus.TOOK_PLACE -> BsMeetingStatus.TOOK_PLACE
     MeetingStatus.WITHDRAWN -> BsMeetingStatus.WITHDRAWN
+    MeetingStatus.UPDATED -> BsMeetingStatus.UPDATED
     null -> BsMeetingStatus.NONE
 }
 

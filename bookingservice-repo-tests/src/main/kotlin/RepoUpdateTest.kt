@@ -26,7 +26,7 @@ fun repoUpdateTest(repo : IMeetingRepository) = funSpec {
         result.data?.clientId shouldBe meeting.clientId
         result.data?.employeeId shouldBe meeting.employeeId
         result.data?.description shouldBe meeting.description
-        result.data?.meetingStatus shouldBe BsMeetingStatus.CREATE
+        result.data?.meetingStatus shouldBe BsMeetingStatus.UPDATED
         result.data?.slots shouldNotBe emptySet<BsSlot>()
         result.data?.slots?.forEach { resultSlot ->
             resultSlot.slotStatus shouldBe BsSlotStatus.RESERVED

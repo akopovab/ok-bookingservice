@@ -42,6 +42,8 @@ dependencies {
     implementation(ktor("default-headers"))
     implementation(ktor("config-yaml"))
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
+    implementation(ktor("auth"))
+    implementation(ktor("auth-jwt"))
 
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -59,6 +61,7 @@ dependencies {
     implementation(project(":bookingservice-api-log"))
     implementation(project(":bookingservice-business"))
     implementation(project(":bookingservice-repo-in-memory"))
+    implementation(project(":bookingservice-repo-postgresql"))
 
 
     testImplementation(kotlin("test-junit5"))
@@ -69,27 +72,13 @@ dependencies {
     testImplementation(ktor("content-negotiation", prefix = "client-"))
 }
 
-tasks {
-    val dockerJvmDockerfile by creating(Dockerfile::class) {
-        group = "docker"
-        from("openjdk:17")
-        copyFile("app.jar", "app.jar")
-        entryPoint("java", "-Xms256m", "-Xmx512m", "-jar", "/app.jar")
-    }
-    create("dockerBuildJvmImage", DockerBuildImage::class) {
-        group = "docker"
-        dependsOn(dockerJvmDockerfile)
-        doFirst {
-            copy {
-                from(dockerJvmDockerfile)
-                into("${project.buildDir}/docker/app.jar")
-            }
-        }
+
+
+docker {
+    javaApplication {
+        baseImage.set("openjdk:17")
         images.add("${project.name}:${project.version}")
+        jvmArgs.set(listOf("-Xms256m", "-Xmx512m"))
     }
-
 }
 
-tasks.test {
-    useJUnitPlatform()
-}

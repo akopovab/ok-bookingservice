@@ -15,7 +15,7 @@ class ResponseSerializationTest {
             employeeId = "789",
             slots = listOf(BaseSlots("123", "25.05.2023 12-00", "25.05.2023 12-30", SlotStatus.RESERVED)),
             description = "Немного задержусь. Если что - позвоню!",
-            status = MeetingStatus.CREATE,
+            status = MeetingStatus.CREATED,
             meetingPermissions = setOf(MeetingPermissions.READ)
         )
     )
@@ -33,7 +33,7 @@ class ResponseSerializationTest {
         assertContains(json, Regex("\"endDate\":\\s*\"25.05.2023 12-30\""))
         assertContains(json, Regex("\"slotStatus\":\\s*\"RESERVED\""))
         assertContains(json, Regex("\"description\":\\s*\"Немного задержусь. Если что - позвоню!\""))
-        assertContains(json, Regex("\"status\":\\s*\"CREATE\""))
+        assertContains(json, Regex("\"status\":\\s*\"CREATED\""))
         assertContains(json, Regex("\"meetingPermissions\":\\W*\"READ\""))
 
     }

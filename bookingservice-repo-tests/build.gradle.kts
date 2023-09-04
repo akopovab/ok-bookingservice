@@ -17,7 +17,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
-    implementation(kotlin("test-junit5"))
+    //implementation(kotlin("test-junit5"))
     implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     implementation("io.kotest:kotest-assertions-core:$kotestVersion")
 

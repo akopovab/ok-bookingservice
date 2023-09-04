@@ -1,6 +1,5 @@
 package ru.otuskotlin.public.bookingservice.business.workers.stubs
 
-import kotlinx.datetime.Clock
 import ru.otuskotlin.public.bookingservice.common.context.Impl.BsMeetingContext
 import ru.otuskotlin.public.bookingservice.common.models.BsState
 import ru.otuskotlin.public.bookingservice.common.models.meeting.BsMeetingPermissions
@@ -21,7 +20,7 @@ fun CorChainDsl<BsMeetingContext>.stubMeetingCreateSuccess(title: String) = work
             clientId = meetingRequest.clientId
             employeeId = meetingRequest.employeeId
             description = meetingRequest.description
-            meetingStatus = BsMeetingStatus.CREATE
+            meetingStatus = BsMeetingStatus.CREATED
             meetingPermissions = mutableSetOf(BsMeetingPermissions.READ)
             slots = meetingRequest.slots
         }

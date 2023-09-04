@@ -2,6 +2,7 @@ package ru.otuskotlin.public.bookingservice.common.models.meeting
 
 import kotlinx.datetime.Instant
 import ru.otuskotlin.public.bookingservice.common.NONE
+import ru.otuskotlin.public.bookingservice.common.models.permission.BsPrincipalRelations
 import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlot
 
 data class BsMeeting (
@@ -14,6 +15,7 @@ data class BsMeeting (
     var meetingPermissions: MutableSet<BsMeetingPermissions> = mutableSetOf(),
     var timeCreate :Instant = Instant.NONE,
     var timeModify :Instant = Instant.NONE,
-    var lock :BsMeetingLock = BsMeetingLock.NONE
+    var lock :BsMeetingLock = BsMeetingLock.NONE,
+    var principalRelation: Set<BsPrincipalRelations> = setOf(BsPrincipalRelations.NONE)
 
 )

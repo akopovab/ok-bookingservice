@@ -14,13 +14,14 @@ import ru.otuskotlin.public.bookingservice.common.models.slot.BsSlotStatus
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 object Slot : Table("t_slot") {
     val id = varchar("id", 36).uniqueIndex()
     private val startDate = varchar("start_date", 36)
     private val endDate = varchar("end_date", 36)
     private val status = enumeration("status", BsSlotStatus::class)
-    private val employeeId = varchar("employee_id", 36)
+    val employeeId = varchar("employee_id", 36)
 
     override val primaryKey = PrimaryKey(id)
 
@@ -42,13 +43,20 @@ object Slot : Table("t_slot") {
     )
 
 
-    fun to(it: UpdateBuilder<*>, slot : BsSlot, uuidId: () -> String) {
+    fun to(it: UpdateBuilder<*>, slot : BsSlot, uuidId: () -> String = {UUID.randomUUID().toString()}) {
         it[id] = slot.id.takeIf { it != BsSlotId.NONE }?.asString() ?: uuidId()
         it[startDate] = slot.startDate.toString()
         it[endDate] = slot.endDate.toString()
         it[status] = slot.slotStatus
         it[employeeId] = slot.employeeId.asString()
     }
+
+    fun reserved(it: UpdateBuilder<*>) {
+        it[status] = BsSlotStatus.RESERVED
+    }
+
+
+
 
 
 
